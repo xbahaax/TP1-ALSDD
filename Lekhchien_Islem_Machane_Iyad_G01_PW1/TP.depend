@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1743208634 source:c:\users\bahaa\desktop\tp\tp\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"Library.h"
+
+1743208995 c:\users\bahaa\desktop\tp\tp\library.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
