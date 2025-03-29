@@ -11,8 +11,8 @@ int main() {
     Loan *returnedLoanList = NULL;
 
     // Load books and library data from files
-    loadBooksFromFile("C:\\Users\\Bahaa\\Documents\\GitHub\\TPV2\\books_data.txt", &bookList);
-    loadLibraryData("C:\\Users\\Bahaa\\Documents\\GitHub\\TPV2\\library_data.txt", &borrowerList, &activeLoanList, &returnedLoanList, bookList); // Corrected to use bookList
+    loadBooksFromFile("C:\\Users\\DELL\\Desktop\\Back\\CodeBlocks-TP\\Lekhchien_Islem_Machane_Iyad_G01_PW1\\books_data.txt", &bookList);
+    loadLibraryData("C:\\Users\\DELL\\Desktop\\Back\\CodeBlocks-TP\\Lekhchien_Islem_Machane_Iyad_G01_PW1\\library_data.txt", &borrowerList, &activeLoanList, &returnedLoanList, bookList); // Corrected to use bookList
     pauseScreen();
     int choice;
     do {

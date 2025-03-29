@@ -748,31 +748,31 @@ void print_AllLoans(Loan *activeLoanList, Loan *pendingLoanList, Loan *returnedL
 
 
 void print_ligne() {
-    printf("-----------------------------------------------------------------------------------------------\n");
+    printf("------------------------------------------------------------------------------------------------\n");
 }
 
 void print_header_books() {
-    printf("| %-8s | %-45s | %-24s | %-4s |\n",
+    printf("| %-8s | %-46s | %-24s | %-4s |\n",
            "Book Id", "Book Name",  "Author", "Copies");
 }
 
 void print_book_ligne(Book *b) {
-    printf("| %-8d | %-45s | %-24s  | %-4d |\n",
+    printf("| %-8d | %-46s | %-24s  | %-4d |\n",
            getBookID(b), getBookTitle(b),  getBookAuthor(b), getBookCopies(b));
 }
 
 void print_header_borrowers() {
-    printf("| %-30s | %-58s |\n",
+    printf("| %-30s | %-59s |\n",
            "Borrower Id", "Borrower Name");
 }
 
 void print_borrower_ligne(Borrower *b) {
-    printf("| %-30d | %-58s |\n",
+    printf("| %-30d | %-59s |\n",
            getBorrowerID(b), getBorrowerName(b));
 }
 
 void print_header_loan() {
-    printf("| %-19s | %-31s | %-11s | %-11s | %-4s |\n",
+    printf("| %-17s | %-32s | %-11s | %-11s | %-9s |\n",
            "Borrower Name", "Book Name", "Borrow Date", "Return Date", "Priority");
 }
 
@@ -783,11 +783,11 @@ char* formatDate(Date d) {
 }
 
 void print_loan_ligne(Loan *l) {
-    printf("| %-19s | ", getBorrowerName(getLoanBorrower(l)));
-    printf("%-33s | ", getBookTitle(getLoanBook(l)));
+    printf("| %-17s | ", getBorrowerName(getLoanBorrower(l)));
+    printf("%-32s | ", getBookTitle(getLoanBook(l)));
     printf("%-11s | ", formatDate(getBorrowDate(l)));
     printf("%-11s | ", formatDate(getReturnDate(l)));
-    printf("%-4d |\n", getLoanPriority(l));
+    printf("%-9d |\n", getLoanPriority(l));
 }
 
 void print_books(Book *b) {
