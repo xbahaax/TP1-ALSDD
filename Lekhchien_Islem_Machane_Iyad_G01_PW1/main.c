@@ -11,8 +11,8 @@ int main() {
     Loan *returnedLoanList = NULL;
 
     // Load books and library data from files
-    loadBooksFromFile("C:\\Users\\DELL\\Desktop\\Back\\CodeBlocks-TP\\Lekhchien_Islem_Machane_Iyad_G01_PW1\\books_data.txt", &bookList);
-    loadLibraryData("C:\\Users\\DELL\\Desktop\\Back\\CodeBlocks-TP\\Lekhchien_Islem_Machane_Iyad_G01_PW1\\library_data.txt", &borrowerList, &activeLoanList, &returnedLoanList, bookList); // Corrected to use bookList
+    loadBooksFromFile("C:\\Users\\DELL\\Desktop\\Back\\TPV2\\books_data.txt", &bookList);
+    loadLibraryData("C:\\Users\\DELL\\Desktop\\Back\\TPV2\\library_data.txt", &borrowerList, &activeLoanList,&pendingLoanList, &returnedLoanList, bookList);
     pauseScreen();
     int choice;
     do {
@@ -34,22 +34,16 @@ int main() {
                 print_borrowers(borrowerList);
                 break;
             case 5:
-                addLoan(&activeLoanList, &pendingLoanList, bookList, borrowerList);
-                break;
-            case 6:
                 print_AllLoans(activeLoanList, pendingLoanList, returnedLoanList);
                 break;
-            case 7:
-                returnBook(&activeLoanList, &pendingLoanList, &returnedLoanList, bookList);
-                break;
-            case 8:
+            case 6:
                 overdue(activeLoanList);
                 pauseScreen();
                 break;
-            case 9:
+            case 7:
                 searchBooksByName(bookList);
                 break;
-            case 10:
+            case 8:
                 printf("Exiting program...\n");
                 break;
             default:
@@ -57,7 +51,7 @@ int main() {
                 pauseScreen();
         }
 
-    } while (choice != 10);
+    } while (choice != 8);
 
     // Free Memory
     freeBooks(bookList);
