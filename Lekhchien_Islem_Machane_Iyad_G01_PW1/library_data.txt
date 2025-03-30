@@ -51,37 +51,36 @@ ADD_BORROWER 49 Yahia
 ADD_BORROWER 50 Leila
 
 # Transactions: Borrowing Books
-BORROW_BOOK 1 1 2025-03-01 5   # Borrowed, should be returned by 2025-03-15
-BORROW_BOOK 2 2 2025-03-02 3   # Borrowed, should be returned by 2025-03-16
-BORROW_BOOK 3 3 2025-03-03 2   # Borrowed, should be returned by 2025-03-17
-BORROW_BOOK 4 4 2025-03-04 4   # Borrowed, should be returned by 2025-03-18
-BORROW_BOOK 5 5 2025-03-05 1   # Borrowed, should be returned by 2025-03-19
-BORROW_BOOK 6 6 2025-03-06 3   # Borrowed, should be returned by 2025-03-20
-BORROW_BOOK 7 7 2025-03-07 2   # Borrowed, should be returned by 2025-03-21
-BORROW_BOOK 8 8 2025-03-08 6   # Borrowed, should be returned by 2025-03-22
-BORROW_BOOK 1 9 2025-03-09 7   # Book 1 already borrowed, should go to pending
-BORROW_BOOK 2 10 2025-03-10 4  # Book 2 already borrowed, should go to pending
-BORROW_BOOK 3 11 2025-03-11 5  # Book 3 already borrowed, should go to pending
-BORROW_BOOK 4 12 2025-03-12 2  # Book 4 already borrowed, should go to pending
-BORROW_BOOK 5 13 2025-03-13 3  # Book 5 already borrowed, should go to pending
-BORROW_BOOK 6 14 2025-03-14 1  # Book 6 already borrowed, should go to pending
-BORROW_BOOK 7 15 2025-03-15 5  # Book 7 already borrowed, should go to pending
-BORROW_BOOK 8 16 2025-03-16 2  # Book 8 already borrowed, should go to pending
-BORROW_BOOK 3 17 2025-03-17 4  # Another pending loan for Book 3
-BORROW_BOOK 7 18 2025-03-18 6  # Another pending loan for Book 7
-BORROW_BOOK 1 19 2025-03-19 3  # Another pending loan for Book 1
-BORROW_BOOK 1 19 2025-03-19 3  # Another pending request for the same book
-	
+BORROW_BOOK 1 1 2025-03-01 5   
+BORROW_BOOK 2 2 2025-03-02 3   
+BORROW_BOOK 3 3 2025-03-03 2   
+BORROW_BOOK 4 4 2025-03-04 4   
+BORROW_BOOK 5 5 2025-03-05 1   
+BORROW_BOOK 6 6 2025-03-06 3   
+BORROW_BOOK 7 7 2025-03-07 2   
+BORROW_BOOK 8 8 2025-03-08 6   
+BORROW_BOOK 1 9 2025-03-09 7   
+BORROW_BOOK 2 10 2025-03-10 4  
+BORROW_BOOK 3 11 2025-03-11 5  
+BORROW_BOOK 4 12 2025-03-12 2  
+BORROW_BOOK 5 13 2025-03-13 3 
+BORROW_BOOK 6 14 2025-03-14 1  
+BORROW_BOOK 7 15 2025-03-15 5  
+BORROW_BOOK 8 16 2025-03-16 2  
+BORROW_BOOK 3 17 2025-03-17 4  
+BORROW_BOOK 7 18 2025-03-18 6 
+BORROW_BOOK 1 19 2025-03-19 3  
+BORROW_BOOK 1 1 2025-04-20 2
 
 # Transactions: Returning Books
-RETURN_BOOK 1 1 2025-03-30   # 15 days overdue
-RETURN_BOOK 2 2 2025-03-31   # 15 days overdue
-RETURN_BOOK 3 3 2025-03-20   # Returned on time
-RETURN_BOOK 4 4 2025-03-29   # 11 days overdue
-RETURN_BOOK 5 5 2025-03-22   # Returned on time
-RETURN_BOOK 6 6 2025-04-02   # 13 days overdue
-RETURN_BOOK 7 7 2025-03-23   # Returned on time
-RETURN_BOOK 8 8 2025-04-05   # 14 days overdue
+RETURN_BOOK 1 1 2025-03-30   
+RETURN_BOOK 2 2 2025-03-31   
+RETURN_BOOK 3 3 2025-03-20   
+RETURN_BOOK 4 4 2025-03-29   
+RETURN_BOOK 5 5 2025-03-22   
+RETURN_BOOK 6 6 2025-04-02  
+RETURN_BOOK 7 7 2025-03-23   
+RETURN_BOOK 8 8 2025-04-05
 
 # Books Not Yet Returned (Still Borrowed / Overdue)
 # Book 1 (by Borrower 9) - Still borrowed, overdue
