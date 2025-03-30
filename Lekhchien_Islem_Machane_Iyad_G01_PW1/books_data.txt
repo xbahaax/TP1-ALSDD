@@ -1,50 +1,8 @@
-ADD_BOOK 1 "Internet of Things" "Eric Freeman" 3
-ADD_BOOK 2 "Parallel Programming" "Peter Pacheco" 1
-ADD_BOOK 3 "Web Development Fundamentals" "Jiawei Han" 4
-ADD_BOOK 4 "Data Mining" "David A. Patterson" 2
-ADD_BOOK 5 "Computer Graphics" "Nielsen Chuang" 5
-ADD_BOOK 6 "Quantum Computing" "Andrew S. Tanenbaum" 1
-ADD_BOOK 7 "Game Development" "Jake VanderPlas" 2
-ADD_BOOK 8 "Computer Architecture" "Jacob Eisenstein" 3
-ADD_BOOK 9 "Functional Programming" "Nielsen Chuang" 4
-ADD_BOOK 10 "Cybersecurity Principles" "Jacob Eisenstein" 5
-ADD_BOOK 11 "Game Development" "Jacob Eisenstein" 1
-ADD_BOOK 12 "Parallel Programming" "Kazem Sohraby" 2
-ADD_BOOK 13 "Wireless Sensor Networks" "Thomas Cormen" 3
-ADD_BOOK 14 "Deep Learning" "Peter Pacheco" 1
-ADD_BOOK 15 "Database Management Systems" "Richard Szeliski" 4
-ADD_BOOK 16 "Programming with Java" "Ben Fry" 2
-ADD_BOOK 17 "Introduction to Algorithms" "Dennis Ritchie" 3
-ADD_BOOK 18 "Operating System Concepts" "Tony Parisi" 5
-ADD_BOOK 19 "The C Programming Language" "Jiawei Han" 1
-ADD_BOOK 20 "Computer Graphics" "Eric Freeman" 2
-ADD_BOOK 21 "Object-Oriented Programming" "Sutton & Barto" 4
-ADD_BOOK 22 "Data Visualization" "Andrew S. Tanenbaum" 3
-ADD_BOOK 23 "Cyber-Physical Systems" "Ian Goodfellow" 5
-ADD_BOOK 24 "Data Mining" "Mahadev Satyanarayanan" 2
-ADD_BOOK 25 "Theory of Computation" "Jake VanderPlas" 1
-ADD_BOOK 26 "Database Management Systems" "Jon Duckett" 4
-ADD_BOOK 27 "Embedded Systems" "John F. Hughes" 3
-ADD_BOOK 28 "Internet of Things" "Alan V. Oppenheim" 5
-ADD_BOOK 29 "Quantum Computing" "Johnathan Harbour" 2
-ADD_BOOK 30 "Computer Graphics" "Richard Szeliski" 1
-ADD_BOOK 31 "Web Development Fundamentals" "Peter Pacheco" 3
-ADD_BOOK 32 "Cybersecurity Principles" "Alan Dix" 4
-ADD_BOOK 33 "Data Structures in C" "Raghu Ramakrishnan" 5
-ADD_BOOK 34 "Software Project Management" "Steve Aukstakalnis" 2
-ADD_BOOK 35 "Neural Networks" "Jacob Eisenstein" 1
-ADD_BOOK 36 "Human-Computer Interaction" "Rajkumar Buyya" 4
-ADD_BOOK 37 "Functional Programming" "Simon Haykin" 3
-ADD_BOOK 38 "Python for Data Science" "Steve Aukstakalnis" 5
-ADD_BOOK 39 "Python for Data Science" "Andrew S. Tanenbaum" 2
-ADD_BOOK 40 "Software Testing" "Richard Szeliski" 1
-ADD_BOOK 41 "The C Programming Language" "Herbert Schildt" 3
-ADD_BOOK 42 "Database Management Systems" "Alan Dix" 4
-ADD_BOOK 43 "Bioinformatics" "Sutton & Barto" 5
-ADD_BOOK 44 "Data Structures in C" "Christopher Bishop" 2
-ADD_BOOK 45 "Software Testing" "Arvind Narayanan" 1
-ADD_BOOK 46 "Computer Vision" "Adrian McEwen" 3
-ADD_BOOK 47 "Wireless Sensor Networks" "Rajkumar Buyya" 4
-ADD_BOOK 48 "Embedded Systems" "Nielsen Chuang" 5
-ADD_BOOK 49 "Cloud Computing" "Rajkumar Buyya" 2
-ADD_BOOK 50 "Blockchain Technology" "William Stallings" 1
+ADD_BOOK 1 "Computer Programming" "John Smith" 1
+ADD_BOOK 2 "Data Structures" "Jane Doe" 1
+ADD_BOOK 3 "Algorithms" "Alan Smith" 1
+ADD_BOOK 4 "Database Systems" "Mary Johnson" 1
+ADD_BOOK 5 "Web Development" "Bob Wilson" 1
+ADD_BOOK 6 "Machine Learning" "Sarah Lee" 1
+ADD_BOOK 7 "Network Security" "Mike Brown" 1
+ADD_BOOK 8 "Fundemental Analysis" "Lounis Ferhat" 1

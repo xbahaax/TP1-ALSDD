@@ -11,8 +11,8 @@ int main() {
     Loan *returnedLoanList = NULL;
 
     // Load books and library data from files
-    loadBooksFromFile("C:\\Users\\DELL\\Desktop\\Back\\TPV2\\books_data.txt", &bookList);
-    loadLibraryData("C:\\Users\\DELL\\Desktop\\Back\\TPV2\\library_data.txt", &borrowerList, &activeLoanList,&pendingLoanList, &returnedLoanList, bookList);
+    loadBooksFromFile("books_data.txt", &bookList);
+    loadLibraryData("library_data.txt", &borrowerList, &activeLoanList,&pendingLoanList, &returnedLoanList, bookList);
     pauseScreen();
     int choice;
     do {
