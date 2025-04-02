@@ -872,7 +872,12 @@ void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanLis
         getLoanBook(loan), getLoanPriority(loan), getBorrowDate(loan), date, overdue); // Insert the loan into the returned list
 
         printf("\nReturned book ID %d by borrower ID %d\n", book_id, borrower_id);
-
+            // Here the logic of the priority queue is applied
+            // But since the pop of the most priorited loan dosent apply only to priority
+            // but also to the book , and the borrow date
+            // so there is no need for storing head and tail
+            // even though the list in sorted , when poping the last element
+            // we arent sure that the book is compatible
         if (getLoanPrev(loan) != NULL) {
             // If loan is NOT the head, update previous node's next
             setLoanNext(getLoanPrev(loan), getLoanNext(loan));
