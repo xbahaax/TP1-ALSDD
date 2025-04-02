@@ -623,31 +623,30 @@ void pauseScreen() {
 
 int getIntInput(const char *prompt) {
     int value;
+    char ch;
+    
     while (1) {
         printf("%s", prompt);
-        if (scanf("%d", &value) == 1) { // ensuring the user entered the correct type
+        if (scanf("%d", &value) == 1) {
+            while ((ch = getchar()) != '\n' && ch != EOF); // Clear extra input
             break;
         } else {
             printf("Invalid input. Please enter an integer.\n");
-            while (getchar() != '\n'); // Clear the input and requesting to re enter it until getting a valid input
+            while ((ch = getchar()) != '\n' && ch != EOF); // Clear invalid input
         }
     }
-    return value;// return the input
+    return value;
 }
 
 void getStringInput(const char *prompt, char *buffer, int size) {
-    // Display the prompt message to the user
     printf("%s", prompt);
 
-    // Clear any leftover characters in the input buffer 
-    while (getchar() != '\n'); 
-
-    // Read a string from the user, ensuring it does not exceed 'size - 1' characters
-    fgets(buffer, size, stdin);
-
-    // Remove the newline character ('\n') that fgets() stores at the end of input, if any
-    buffer[strcspn(buffer, "\n")] = 0;
+    // Read input
+    if (fgets(buffer, size, stdin)) {
+        buffer[strcspn(buffer, "\n")] = '\0';  // Remove newline if present
+    }
 }
+
 
 
 void displayMenu(Book **books, Loan **activeloans, Loan **pendingloans, Loan **returnedloans, Borrower **borrowers) {
@@ -699,12 +698,12 @@ void BookMenu(Book **b) {
     int choice;
     do {
         system(CLEAR_SCREEN);
-        printf("\n========== BOOK MANAGEMENT ===================\n");
+        printf("\n========== BOOK MANAGEMENT ====================\n");
         printf("|    1. List Books                             |\n");
         printf("|    2. Add a Book                             |\n");
         printf("|    3. Search a Book                          |\n");
         printf("|    4. Return to Main Menu                    |\n");
-        printf("==============================================\n");
+        printf("================================================\n");
         choice = getIntInput("Enter your choice: ");
 
         switch (choice) {
@@ -777,7 +776,7 @@ void FilesMenu(Book **bk, Loan **active, Loan **pending, Loan **returned, Borrow
         printf("|   4. Load Returning Books From File           |\n");
         printf("|   5. Load All the library Data                |\n");
         printf("|   6. Return to Main Menu                      |\n");
-        printf("===============================================\n");
+        printf("=================================================\n");
         
         choice = getIntInput("Enter your choice: ");
 
@@ -870,7 +869,7 @@ void BorrowersMenu(Borrower **b){
         printf("|   1. Add a new borrower                      |\n");
         printf("|   2. List borrowers                          |\n");
         printf("|   3. Return to Main Menu                     |\n");
-        printf("===============================================\n");
+        printf("================================================\n");
         choice = getIntInput("Enter your choice: ");
         switch (choice)
         {
