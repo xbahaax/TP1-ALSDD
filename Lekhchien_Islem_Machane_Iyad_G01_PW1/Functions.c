@@ -72,10 +72,7 @@ void setBook(Book *b, int id, char title[], char author[], int copies ) {
 
 
 
-// BookTheme functions
 
-
-// Borrower functions
 int getBorrowerID(Borrower *b)
 {
     return b->id;
@@ -292,7 +289,6 @@ Book* insertBook(Book *head, int id, char title[], char author[], int copies) {
     setBook(newBook, id, title, author, copies);
     setBookNext(newBook, NULL);
     setBookPrev(newBook, NULL);
-    // Rest of the existing insertBook function remains the same
     if (head == NULL || getBookID(head) > id) {
         setBookNext(newBook, head);
         if (head != NULL) setBookPrev(head, newBook);
@@ -385,25 +381,25 @@ int compare_date(Loan *l) {
     int current_month = current_time->tm_mon + 1;
     int current_year = current_time->tm_year + 1900;
 
-    // Using getter functions instead of direct struct access
+    // Getting the return date of the loan
     int return_year = getDateYear(getReturnDate(l));
     int return_month = getDateMonth(getReturnDate(l));
     int return_day = getDateDay(getReturnDate(l));
 
-    // Compare years first
+    // Compare years first , if return year is before current year then it is overdue
     if (return_year < current_year) return 1;  // Overdue
 
 
-    // Same year, compare months
+    //  compare months
     if (return_month < current_month) return 1;  // Overdue
 
-
+    // Then comparing the day
     if (return_day < current_day) return 1;  // Overdue
 
     return 0;  // Not overdue
 }
 
-// Update overdue function to use the correct functions
+
 void overdue(Loan *l) {
     while (l != NULL) {
         if (compare_date(l)) {
@@ -416,7 +412,7 @@ void overdue(Loan *l) {
 }
 
 
-// Function to check if a book exists
+
 Book* findBookById(Book *bookList, int id) {
     Book *b = bookList;
     while (b != NULL) {
@@ -426,37 +422,40 @@ Book* findBookById(Book *bookList, int id) {
     return NULL;
 }
 
-// Function to check if a borrower exists
+
 Borrower* findBorrowerById(Borrower *borrowerList, int id) {
     Borrower *br = borrowerList;
     while (br != NULL) {
-        if (getBorrowerID(br) == id) return br;
+        if (getBorrowerID(br) == id) return br; // Return the borrower pointer
         br = getBorrowerNext(br);
     }
-    return NULL;
+    return NULL;// NULL then borrower dosent exist
 }
 
-// Add these functions after the existing findBorrowerById function
 
-// Function to check if a book is available for borrowing
+
+
 int isBookAvailable(Book *book) {
-    return (book != NULL && getBookCopies(book) > 0);
+    if (book != NULL && getBookCopies(book) > 0) {
+        return 1;  // Book is available
+    }
+    return 0;// Book is not available
 }
 
-// Function to check if a loan exists
+
 Loan* findActiveLoan(Loan *loanList, int bookId, int borrowerId) {
     Loan *current = loanList;
     while (current != NULL) {
         if (getBookID(getLoanBook(current)) == bookId &&
             getBorrowerID(getLoanBorrower(current)) == borrowerId) {
-            return current;
+            return current;// returning the loan if The book id and borrower id matches
         }
         current = getLoanNext(current);
     }
-    return NULL;
+    return NULL;// NULL then loan dosent exist
 }
 
-// Function to validate a loan request
+
 int validateLoanRequest(Book *book, Borrower *borrower, Loan *activeLoanList) {
     if (book == NULL || borrower == NULL) {
         return 0; // Invalid book or borrower
@@ -467,11 +466,13 @@ int validateLoanRequest(Book *book, Borrower *borrower, Loan *activeLoanList) {
     }
 
     if (findActiveLoan(activeLoanList, getBookID(book), getBorrowerID(borrower))) {
-        return -2; // Borrower already has this book
+        return -2; // Borrower already has this book , so he cant make a request on the book while borrowing it
     }
 
     return 1; // Valid request
 }
+
+
 Date addDaysToDate(Date date, int days) {
     date.day += days;
 
@@ -487,24 +488,26 @@ Date addDaysToDate(Date date, int days) {
 
     return date;
 }
+
+
 // Function to compare two dates
 int compareDates(Date date1, Date date2) {
     if (date1.year < date2.year) {
-        return -1;
+        return -1; // return -1 if the date1 is < date2
     } else if (date1.year > date2.year) {
-        return 1;
+        return 1;// return 1 if the date1 is > date2
     } else {
         if (date1.month < date2.month) {
-            return -1;
+            return -1; // return -1 if the date1 is < date2
         } else if (date1.month > date2.month) {
-            return 1;
+            return 1;// return 1 if the date1 is > date2
         } else {
             if (date1.day < date2.day) {
-                return -1;
+                return -1; // return -1 if the date1 is < date2
             } else if (date1.day > date2.day) {
-                return 1;
+                return 1;// return 1 if the date1 is > date2
             } else {
-                return 0;
+                return 0;// Those two dates are equal
             }
         }
     }
@@ -525,17 +528,21 @@ int getIntInput(const char *prompt) {
             break;
         } else {
             printf("Invalid input. Please enter an integer.\n");
-            while (getchar() != '\n'); // Clear the input buffer
+            while (getchar() != '\n'); // Clear the input and requesting to re enter it until getting a valid input
         }
     }
-    return value;
+    return value;// return the input
 }
 
 void getStringInput(const char *prompt, char *buffer, int size) {
+    // Display the prompt message to the user
     printf("%s", prompt);
-    scanf(" ");
+
+    // Read a string from the user, ensuring it does not exceed 'size - 1' characters
     fgets(buffer, size, stdin);
-    buffer[strcspn(buffer, "\n")] = 0; // Remove newline character
+
+    // Remove the newline character ('\n') that fgets() stores at the end of input
+    buffer[strcspn(buffer, "\n")] = 0;
 }
 
 void displayMenu(Book **books, Loan **activeloans, Loan **pendingloans, Loan **returnedloans, Borrower **borrowers) {
@@ -723,24 +730,19 @@ void addBook(Book **bookList) {
     int id, copies;
     char title[100], author[100];
 
-    id = getIntInput("Enter Book ID: ");
+    id = getIntInput("Enter Book ID: "); // Get book ID from user
     if (findBookById(*bookList, id) != NULL) {
         printf("Book with ID %d already exists.\n", id);
         pauseScreen();
         return;
     }
-    getStringInput("Enter Title: ", title, sizeof(title));
-    getStringInput("Enter Author: ", author, sizeof(author));
-    copies = getIntInput("Enter Copies: ");
+    getStringInput("Enter Title: ", title, sizeof(title)); // Get book title from user
+    getStringInput("Enter Author: ", author, sizeof(author)); // Get book author from user
+    copies = getIntInput("Enter Copies: ");// Get book copies from user
 
     Book *newBook = insertBook(*bookList, id, title, author, copies);
-    if (newBook == NULL) {
-        printf("Failed to add book due to memory allocation error.\n");
-        pauseScreen();
-        return;
-    }
     *bookList = newBook;
-    printf("Book added successfully!\n");
+    printf("Book added successfully!\n");// Message of success
     pauseScreen();
 }
 
@@ -748,80 +750,78 @@ void addBorrower(Borrower **borrowerList) {
     int id;
     char name[100];
 
-    id = getIntInput("Enter Borrower ID: ");
-    if (findBorrowerById(*borrowerList, id) != NULL) {
+    id = getIntInput("Enter Borrower ID: ");// Get borrower ID from user
+    if (findBorrowerById(*borrowerList, id) != NULL) { // Check if borrower already exists
         printf("Borrower with ID %d already exists.\n", id);
         pauseScreen();
         return;
     }
-    getStringInput("Enter Name: ", name, sizeof(name));
+    getStringInput("Enter Name: ", name, sizeof(name)); // Get borrower name from user
 
     Borrower *newBorrower = insertBorrower(*borrowerList, id, name);
-    if (newBorrower == NULL) {
-        printf("Failed to add borrower due to memory allocation error.\n");
-        pauseScreen();
-        return;
-    }
     *borrowerList = newBorrower;
-    printf("Borrower added successfully!\n");
+    printf("Borrower added successfully!\n");// Message of success
     pauseScreen();
 }
+
+
 void AddLoan(Borrower **borrowerList, Loan **activeLoanList,
     Loan **pendingLoanList, Book *bookList) {
-int borrower_id, book_id, priority;
-Date date;
-Date return_date;
+    
+    int book_id, borrower_id, priority;
+    Date date, return_date;
 
-// Get input from user
-printf("\n--- Process Book Borrow ---\n");
+    // Get Book ID from user
+    printf("\n--- Process Book Borrow ---\n");
+    book_id = getIntInput("Enter Book ID: ");
 
-printf("Enter Book ID: ");
-scanf("%d", &book_id);
-while(getchar() != '\n'); // Clear input buffer
+    // Get Borrower ID from user
+    borrower_id = getIntInput("Enter Borrower ID: ");
 
-printf("Enter Borrower ID: ");
-scanf("%d", &borrower_id);
-while(getchar() != '\n'); // Clear input buffer
+    // Get Borrow Date from user with validation
+    printf("Enter Borrow Date (YYYY-MM-DD): ");
+    while (scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3) {
+        while (getchar() != '\n');  // Clear input buffer
+        printf("Invalid date format. Please enter in YYYY-MM-DD format: ");
+    }
+    while (getchar() != '\n');  // Clear input buffer after date input
 
-printf("Enter Borrow Date (YYYY-MM-DD): ");
-while(scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3) {
-while(getchar() != '\n'); // Clear invalid input
-printf("Invalid date format. Please enter in YYYY-MM-DD format: ");
-}
-while(getchar() != '\n'); // Clear input buffer
+    // Get Priority from user
+    priority = getIntInput("Enter Priority: ");
 
-printf("Enter Priority: ");
-scanf("%d", &priority);
-while(getchar() != '\n'); // Clear input buffer
+    // Process the borrowing
+    Borrower *borrower = findBorrowerById(*borrowerList, borrower_id);
+    Book *book = findBookById(bookList, book_id);
 
-// Process the borrowing
-Borrower *borrower = findBorrowerById(*borrowerList, borrower_id);
-Book *book = findBookById(bookList, book_id);
+    // Check if the borrower or book is invalid
+    if (!borrower || !book) {
+        printf("\nError: ");
+        if (!borrower) printf("Borrower ID %d not found. ", borrower_id);
+        if (!book) printf("Book ID %d not found.", book_id);
+        printf("\n");
+        return;
+    }
 
-if (!borrower || !book) {
-printf("\nError: ");
-if (!borrower) printf("Borrower ID %d not found. ", borrower_id);
-if (!book) printf("Book ID %d not found.", book_id);
-printf("\n");
-return;
-}
+    // Calculate the return date (14 days later)
+    return_date = addDaysToDate(date, 14);
 
-return_date = addDaysToDate(date, 14);
-int validationResult = validateLoanRequest(book, borrower, *activeLoanList);
+    // Validate loan request
+    int validationResult = validateLoanRequest(book, borrower, *activeLoanList);
 
-if (validationResult == 1) {
-*activeLoanList = insertLoan(*activeLoanList, borrower, book, priority, date, return_date, 0);
-setBookCopies(book, getBookCopies(book) - 1);
-printf("\nSuccessfully borrowed Book ID %d by Borrower ID %d\n", book_id, borrower_id);
-printf("Due Date: %d-%02d-%02d\n", return_date.year, return_date.month, return_date.day);
-} else {
-*pendingLoanList = insertLoan(*pendingLoanList, borrower, book, priority, date, return_date, 0);
-printf("\nAdded to pending requests: Book ID %d, Borrower ID %d\n", book_id, borrower_id);
-printf("Reason: %s\n",
-validationResult == -1 ? "No copies available" :
-(validationResult == -2 ? "Book already borrowed by this borrower" : "Invalid request"));
-printf("Priority: %d\n", priority);
-}
+    // Handle loan approval or pending request based on validation
+    if (validationResult == 1) {
+        *activeLoanList = insertLoan(*activeLoanList, borrower, book, priority, date, return_date, 0);
+        setBookCopies(book, getBookCopies(book) - 1);
+        printf("\nSuccessfully borrowed Book ID %d by Borrower ID %d\n", book_id, borrower_id);
+        printf("Due Date: %d-%02d-%02d\n", return_date.year, return_date.month, return_date.day);
+    } else {
+        *pendingLoanList = insertLoan(*pendingLoanList, borrower, book, priority, date, return_date, 0);
+        printf("\nAdded to pending requests: Book ID %d, Borrower ID %d\n", book_id, borrower_id);
+        printf("Reason: %s\n",
+            validationResult == -1 ? "No copies available" :
+            (validationResult == -2 ? "Book already borrowed by this borrower" : "Invalid request"));
+        printf("Priority: %d\n", priority);
+    }
 }
 
 // Function to display all loans (active, pending, and returned)
@@ -996,7 +996,7 @@ void print_Loans(Borrower *b, Book *bk, Loan *l) {
 
 
 
-void searchBooksByName(Book *bookList) {
+int searchBooksByName(Book *bookList) {
     char searchTerm[100];
     int found = 0;
 
@@ -1009,7 +1009,7 @@ void searchBooksByName(Book *bookList) {
 
         Book *current = bookList;
         while (current != NULL) {
-            // Case-insensitive search (convert both to lowercase for comparison)
+            // making a lower case copy of the book title to ensure all results are displayed
             char bookTitle[100];
             char searchTermLower[100];
 
@@ -1027,7 +1027,7 @@ void searchBooksByName(Book *bookList) {
                     searchTermLower[i] += 32;
             }
 
-            // Check if search term is contained in the book title
+            // looks for search term substring
             if (strstr(bookTitle, searchTermLower) != NULL) {
                 print_book_ligne(current);
                 print_ligne();
@@ -1044,13 +1044,13 @@ void searchBooksByName(Book *bookList) {
     } else {
         printf("\nNo books available.\n");
     }
-
+    return found;
     pauseScreen();
 }
 
 void loadBooksFromFile(const char *filename, Book **bookList) {
     FILE *file = fopen(filename, "r");
-    if (file == NULL) {
+    if (file == NULL) { // Opening the file
         printf("Error opening file: %s\n", filename);
         return;
     }
@@ -1059,7 +1059,7 @@ void loadBooksFromFile(const char *filename, Book **bookList) {
     int lineNumber = 0;
     while (fgets(line, sizeof(line), file)) {
         lineNumber++;
-        if (line[0] == '#') {
+        if (line[0] == '#') { // Skip comments defined with # at the start of the line
             printf("Skipping comment line %d\n", lineNumber);
             continue;
         }
@@ -1068,11 +1068,15 @@ void loadBooksFromFile(const char *filename, Book **bookList) {
         char title[100], author[100];
 
         if (sscanf(line, "ADD_BOOK %d \"%[^\"]\" \"%[^\"]\" %d", &id, title, author, &copies) == 4) {
-            if (findBookById(*bookList, id) == NULL) {
+            if (findBookById(*bookList, id) == NULL && searchBooksByName(title) == 0) {
                 *bookList = insertBook(*bookList, id, title, author, copies);
                 printf("Added book ID %d: %s by %s\n", id, title, author);
-            } else {
+            } else if (findBookById(*bookList, id)!= NULL) { // case where book is duplicated
                 printf("Book with ID %d already exists.\n", id);
+            } else if (searchBooksByName(title)){
+                printf("Book with name %s already exists.\n", title);
+            } else {
+                printf("Error parsing line %d: unable to add book\n", line);
             }
         }
     }
@@ -1085,13 +1089,15 @@ void processBorrowerData(char *line, Borrower **borrowerList) {
     char name[100];
 
     if (sscanf(line, "ADD_BORROWER %d %s", &id, name) == 2) {
-        if (findBorrowerById(*borrowerList, id) == NULL) {
+        if (findBorrowerById(*borrowerList, id) == NULL) {// checking if browwer id is available ( multiple names are Ok)
             *borrowerList = insertBorrower(*borrowerList, id, name);
             printf("Added borrower ID %d: %s\n", id, name);
-        } else {
+        } else if (findBorrowerById(*borrowerList, id) != NULL) {
             printf("Borrower with ID %d already exists.\n", id);
-        }
+        } else {
+            printf("Error parsing line %s: unable to add borrower\n",line);
     }
+}
 }
 
 void processBorrowBook(char *line, Borrower **borrowerList, Loan **activeLoanList,
@@ -1106,21 +1112,27 @@ void processBorrowBook(char *line, Borrower **borrowerList, Loan **activeLoanLis
         Borrower *borrower = findBorrowerById(*borrowerList, borrower_id);
         Book *book = findBookById(bookList, book_id);
 
-        if (!borrower || !book) {
+        if (!borrower || !book) { // checking for books and borrowers
             printf("Error: Borrower or book not found : %s \n", line);
             return;
         }
-        return_date = addDaysToDate(date,14);
+        return_date = addDaysToDate(date,14);// calculating return date which is 14 days after the borrow
         int validationResult = validateLoanRequest(book, borrower, *activeLoanList);
+        // Check if the loan request is valid (validationResult == 1 means everything is fine)
+
         if (validationResult == 1) {
-            *activeLoanList = insertLoan(*activeLoanList, borrower, book, priority, date, return_date,0);
+            // Add loan to active list and decrement available book copies
+            *activeLoanList = insertLoan(*activeLoanList, borrower, book, priority, date, return_date, 0);
             setBookCopies(book, getBookCopies(book) - 1);
-            printf("Borrowed book ID %d by borrower ID %d\n", book_id, borrower_id);
+            // Inform user of successful loan
+            printf("Successfully borrowed Book ID %d by Borrower ID %d\n", book_id, borrower_id);
         } else {
-            *pendingLoanList = insertLoan(*pendingLoanList, borrower, book, priority, date, return_date,0);
-            printf("Added to pending: Book ID %d, Borrower ID %d (%s)\n",
-                book_id, borrower_id, validationResult == -1 ? "no copies available" :
-                (validationResult == -2 ? "book already borrowed" : "invalid request"));
+            // If the loan request is invalid, book not available , it goes to pending
+            *pendingLoanList = insertLoan(*pendingLoanList, borrower, book, priority, date, return_date, 0);
+            // Inform user why the loan was added to pending
+            printf("Added to pending requests: Book ID %d, Borrower ID %d\n", book_id, borrower_id);
+            printf("Reason: %s\n", 
+                validationResult == -1 ? "No copies available" : "Book already borrowed"  );
         }
     }
 }
