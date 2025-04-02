@@ -795,8 +795,16 @@ void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanLis
 
     if (loan != NULL) {
         Loan *prev = NULL;
+        Loan *current = *activeLoanList;
+        
+        // Find the loan in the active list and its previous node
+        while (current != NULL && current != loan) {
+            prev = current;
+            current = getLoanNext(current);
+        }
+
         Book *book = findBookById(bookList, book_id);
-        overdue = (compareDates(date, getReturnDate(loan)) > 0) ? 1 : 0;
+        overdue = (compareDates(date, getReturnDate(loan)) > 0 ? 1 : 0);
 
         // Move the loan to the returned loan list
         *returnedLoanList = insertLoan(*returnedLoanList, getLoanBorrower(loan),
@@ -845,7 +853,7 @@ void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanLis
             Date return_date = addDaysToDate(date, 14);
             setReturnDate(highestPriorityLoan, return_date);
 
-            // Add to active list
+            // Add to active list - preserve the existing active loans
             setLoanNext(highestPriorityLoan, *activeLoanList);
             *activeLoanList = highestPriorityLoan;
 
@@ -866,31 +874,31 @@ void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanLis
 void processBorrow(int book_id, int borrower_id, Date date, int priority,
     Borrower **borrowerList, Loan **activeLoanList,
     Loan **pendingLoanList, Book *bookList) {
-Date return_date = addDaysToDate(date, 14);
+    Date return_date = addDaysToDate(date, 14);
 
-Borrower *borrower = findBorrowerById(*borrowerList, borrower_id);
-Book *book = findBookById(bookList, book_id);
+    Borrower *borrower = findBorrowerById(*borrowerList, borrower_id);
+    Book *book = findBookById(bookList, book_id);
 
-if (!borrower || !book) {
-printf("Error: ");
-if (!borrower) printf("Borrower ID %d not found. ", borrower_id);
-if (!book) printf("Book ID %d not found.");
-printf("\n");
-return;
-}
+    if (!borrower || !book) {
+        printf("Error: ");
+        if (!borrower) printf("Borrower ID %d not found. ", borrower_id);
+        if (!book) printf("Book ID %d not found.");
+        printf("\n");
+    return;
+    }
 
-int validationResult = validateLoanRequest(book, borrower, *activeLoanList);
+    int validationResult = validateLoanRequest(book, borrower, *activeLoanList);
 
-if (validationResult == 1) {
-*activeLoanList = insertLoan(*activeLoanList, borrower, book, priority, date, return_date, 0);
-setBookCopies(book, getBookCopies(book) - 1);
-printf("Successfully borrowed Book ID %d by Borrower ID %d\n", book_id, borrower_id);
-printf("Due Date: %d-%02d-%02d\n", return_date.year, return_date.month, return_date.day);
-} else {
-*pendingLoanList = insertLoan(*pendingLoanList, borrower, book, priority, date, return_date, 0);
-printf("Added to pending requests: Book ID %d, Borrower ID %d\n", book_id, borrower_id);
-printf("Reason: %s\n", validationResult == -1 ? "No copies available" : "Book already borrowed");
-}
+    if (validationResult == 1) {
+        *activeLoanList = insertLoan(*activeLoanList, borrower, book, priority, date, return_date, 0);
+        setBookCopies(book, getBookCopies(book) - 1);
+        printf("Successfully borrowed Book ID %d by Borrower ID %d\n", book_id, borrower_id);
+        printf("Due Date: %d-%02d-%02d\n", return_date.year, return_date.month, return_date.day);
+    } else {
+        *pendingLoanList = insertLoan(*pendingLoanList, borrower, book, priority, date, return_date, 0);
+        printf("Added to pending requests: Book ID %d, Borrower ID %d\n", book_id, borrower_id);
+        printf("Reason: %s\n", validationResult == -1 ? "No copies available" : "Book already borrowed");
+    }
 }
 
 // ------------------------------------------ Adding via interface functions ------------------------------------------
@@ -936,23 +944,23 @@ void addBorrower(Borrower **borrowerList) {
 
 void AddLoan(Borrower **borrowerList, Loan **activeLoanList,
     Loan **pendingLoanList, Book *bookList) {
-int book_id, borrower_id, priority;
-Date date;
+    int book_id, borrower_id, priority;
+    Date date;
 
-printf("\n--- Process Book Borrow ---\n");
-book_id = getIntInput("Enter Book ID: ");
-borrower_id = getIntInput("Enter Borrower ID: ");
+    printf("\n--- Process Book Borrow ---\n");
+    book_id = getIntInput("Enter Book ID: ");
+    borrower_id = getIntInput("Enter Borrower ID: ");
 
-printf("Enter Borrow Date (YYYY-MM-DD): ");
-while (scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3) {
-while (getchar() != '\n');
-printf("Invalid date format. Please enter in YYYY-MM-DD format: ");
-}
-while (getchar() != '\n');
+    printf("Enter Borrow Date (YYYY-MM-DD): ");
+    while (scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3) {
+    while (getchar() != '\n');
+    printf("Invalid date format. Please enter in YYYY-MM-DD format: ");
+    }
+    while (getchar() != '\n');
 
-priority = getIntInput("Enter Priority: ");
+    priority = getIntInput("Enter Priority: ");
 
-processBorrow(book_id, borrower_id, date, priority, borrowerList, activeLoanList, pendingLoanList, bookList);
+    processBorrow(book_id, borrower_id, date, priority, borrowerList, activeLoanList, pendingLoanList, bookList);
 }
 
 void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
