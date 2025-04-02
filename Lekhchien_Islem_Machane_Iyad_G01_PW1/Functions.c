@@ -621,7 +621,7 @@ void pauseScreen() {
     getchar(); // Wait for the actual Enter key press
 }
 
-int getIntInput(const char *prompt) {
+int getIntInput(char* prompt) {
     int value;
     char ch;
     
@@ -638,7 +638,7 @@ int getIntInput(const char *prompt) {
     return value;
 }
 
-void getStringInput(const char *prompt, char *buffer, int size) {
+void getStringInput(char* prompt, char *buffer, int size) {
     printf("%s", prompt);
 
     // Read input

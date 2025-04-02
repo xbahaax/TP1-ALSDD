@@ -287,10 +287,10 @@ int validateLoanRequest(Book *book, Borrower *borrower, Loan *activeLoanList);
 void pauseScreen();
 
 // Function to get integer input to easily get inputs
-int getIntInput(const char *prompt);
+int getIntInput(char* prompt);
 
 // Function to get string input to easily get inputs
-void getStringInput(const char *prompt, char *buffer, int size);
+void getStringInput(char* prompt, char *buffer, int size);
 
 // Function to format the Date strcuture for output
 char* formatDate(Date d) ;
