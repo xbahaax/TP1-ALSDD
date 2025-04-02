@@ -9,6 +9,7 @@ int main(){
     Loan *pendingLoanList = NULL;
     Loan *returnedLoanList = NULL;
     Herosec();
+    pauseScreen();
     displayMenu(&bookList,&activeLoanList,&pendingLoanList,&returnedLoanList,&borrowerList);
 
     freeBooks(bookList);

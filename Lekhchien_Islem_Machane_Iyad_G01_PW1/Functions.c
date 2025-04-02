@@ -633,8 +633,9 @@ void LoansMenu(Loan **active, Loan **pending, Loan **returned, Borrower **b, Boo
         printf("|    1. List Loans                              |\n");
         printf("|    2. Add a Loan                              |\n");
         printf("|    3. Return a Loan                           |\n");
-        printf("|    4. Return to Main Menu                     |\n");
-        printf("==============================================\n");
+        printf("|    4. Explanation about the Return System     |\n");
+        printf("|    5. Return to Main Menu                     |\n");
+        printf("=================================================\n");
         choice = getIntInput("Enter your choice: ");
 
         switch (choice) {
@@ -650,6 +651,10 @@ void LoansMenu(Loan **active, Loan **pending, Loan **returned, Borrower **b, Boo
                 pauseScreen();
                 break;
             case 4:
+                printReturnSystemExplanation();
+                pauseScreen();
+            break;
+            case 5:
                 return;
             default:
                 printf("Invalid choice. Please choose a valid option.\n");
@@ -1309,6 +1314,7 @@ void loadLibraryData(const char *filename, Borrower **borrowerList, Loan **activ
 fclose(file);
 }
 
+
 void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
     Loan **returnedLoanList, Book *bookList) {
     int borrower_id, book_id, overdue;
@@ -1451,7 +1457,38 @@ void Herosec(){
     printf("\t\t\t _____________________________________________________________\n");
     printf("\t\t\t| Note!! Press the 'ENTER' key to access the Menu             |\n");
     printf("\t\t\t|_____________________________________________________________|\n");
-    getchar();
 }
 
-
+void printReturnSystemExplanation() {
+    printf("\n=== BOOK RETURN SYSTEM EXPLANATION ===\n");
+    printf("1. RETURN PROCESS:\n");
+    printf("   - The default borrow period is 14 days , which is setted by the system when borrowing a book\n");
+    printf("   - Enter Book ID and Borrower ID\n");
+    printf("   - Enter the return date (YYYY-MM-DD)\n");
+    printf("   - System verifies the active loan exists\n");
+    printf("   - Records the return and checks for overdue status\n\n");
+    
+    printf("2. AFTER RETURN:\n");
+    printf("   a) If pending requests exist:\n");
+    printf("      * Processes highest priority request automatically\n");
+    printf("      * The borrow date of the pending request is set to the return date of the returned book\n");
+    printf("      * New loan starts immediately (14-day due date)\n");
+    printf("      * Book stays checked out\n\n");
+    
+    printf("   b) If no pending requests:\n");
+    printf("      * Available copies increase by 1\n");
+    printf("      * Book becomes available for new loans\n\n");
+    
+    printf("3. OVERDUE MANAGEMENT:\n");
+    printf("   - Overdue status is determined at return time\n");
+    printf("   - All active loans can be checked for overdue status\n");
+    printf("     from the main menu option:\n");
+    printf("     * 'Check Overdue Loans'\n");
+    printf("     * Shows all loans past their due date\n");
+    printf("     * Updated daily based on system date\n\n");
+    
+    printf("4. RECORD KEEPING:\n");
+    printf("   - Returned books move to loan history\n");
+    printf("   - Overdue returns remain in system records\n");
+    printf("===============================\n\n");
+}

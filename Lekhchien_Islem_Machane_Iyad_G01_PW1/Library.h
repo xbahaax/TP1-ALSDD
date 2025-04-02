@@ -358,6 +358,9 @@ void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
 // Function to display opening interface
 void Herosec();
 
+// Function to display Return system explanation
+void ReturnSystemExplanation();
+
 
 // -------------------------------File manipulation Functions -------------------------------------//
 
