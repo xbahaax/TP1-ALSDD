@@ -671,8 +671,10 @@ void FilesMenu(Book **bk, Loan **active, Loan **pending, Loan **returned, Borrow
         system(CLEAR_SCREEN);
         printf("\n========== FILES MANAGEMENT ====================\n");
         printf("|   1. Load Books From File                     |\n");
-        printf("|   2. Load Loans Transactions From File        |\n");
-        printf("|   3. Return to Main Menu                      |\n");
+        printf("|   2. Load Borrowers Data From File            |\n");
+        printf("|   3. Load Borrowing Books From File           |\n");
+        printf("|   4. Load Returning Books From File           |\n");
+        printf("|   5. Return to Main Menu                      |\n");
         printf("===============================================\n");
         
         choice = getIntInput("Enter your choice: ");
@@ -685,15 +687,22 @@ void FilesMenu(Book **bk, Loan **active, Loan **pending, Loan **returned, Borrow
                 break;
 
             case 2:
-                // Ensure to clear the buffer before getting string input
                 getStringInput("Enter the file name: ", filename, sizeof(filename));
-                loadLibraryData(filename, b, active, pending, returned, *bk);
+                loadLibraryData(filename, b, active, pending, returned, *bk,1);
                 pauseScreen();
                 break;
-
             case 3:
+                getStringInput("Enter the file name: ", filename, sizeof(filename));
+                loadLibraryData(filename,b, active, pending, returned, *bk, 2);
+                pauseScreen();
+                break;
+            case 4:
+                getStringInput("Enter the file name: ", filename, sizeof(filename));
+                loadLibraryData(filename,b, active, pending, returned, *bk, 3);
+                pauseScreen();
+                break;
+            case 5:
                 return;
-
             default:
                 printf("Invalid choice. Please choose a valid option.\n");
                 break;
@@ -1282,7 +1291,7 @@ void processReturnBook(char *line, Loan **activeLoanList, Loan **pendingLoanList
 
 
 void loadLibraryData(const char *filename, Borrower **borrowerList, Loan **activeLoanList,
-    Loan **pendingLoanList, Loan **returnedLoanList, Book *bookList) {
+    Loan **pendingLoanList, Loan **returnedLoanList, Book *bookList, int choice) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("Error opening file: %s\n", filename);
@@ -1292,26 +1301,43 @@ void loadLibraryData(const char *filename, Borrower **borrowerList, Loan **activ
     char line[256];
     while (fgets(line, sizeof(line), file)) {
         if (line[0] == '#') {
-        continue;
+            continue;
         }
 
         strtok(line, "\n");
 
-        // if the command is "add_borrower" execute the proceesBrowwerData function
-        if (strstr(line, "ADD_BORROWER")) {
-            processBorrowerData(line, borrowerList);
+        // Execute based on the choice parameter
+        switch(choice) {
+            case 1: // Only process ADD_BORROWER commands
+                if (strstr(line, "ADD_BORROWER")) {
+                    processBorrowerData(line, borrowerList);
+                }
+                break;
+            case 2: // Only process BORROW_BOOK commands
+                if (strstr(line, "BORROW_BOOK")) {
+                    processBorrowBook(line, borrowerList, activeLoanList, pendingLoanList, bookList);
+                }
+                break;
+            case 3: // Only process RETURN_BOOK commands
+                if (strstr(line, "RETURN_BOOK")) {
+                    processReturnBook(line, activeLoanList, pendingLoanList, returnedLoanList, bookList);
+                }
+                break;
+            default: // Process all commands (original behavior)
+                if (strstr(line, "ADD_BORROWER")) {
+                    processBorrowerData(line, borrowerList);
+                }
+                else if (strstr(line, "BORROW_BOOK")) {
+                    processBorrowBook(line, borrowerList, activeLoanList, pendingLoanList, bookList);
+                }
+                else if (strstr(line, "RETURN_BOOK")) {
+                    processReturnBook(line, activeLoanList, pendingLoanList, returnedLoanList, bookList);
+                }
+                break;
         }
-        // if the command is "add_loan" execute the processBorrowBook function
-        else if (strstr(line, "BORROW_BOOK")) {
-            processBorrowBook(line, borrowerList, activeLoanList, pendingLoanList, bookList);
-        }
-        // if the command is "return_book" execute the processReturnBook function
-        else if (strstr(line, "RETURN_BOOK")) {
-            processReturnBook(line, activeLoanList, pendingLoanList, returnedLoanList, bookList);
-        }
-        }
+    }
 
-fclose(file);
+    fclose(file);
 }
 
 

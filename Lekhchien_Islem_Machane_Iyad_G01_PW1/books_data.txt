@@ -1,10 +1,20 @@
-ADD_BOOK 1 "Computer Programming" "John Smith" 1
-ADD_BOOK 2 "Data Structures" "Jane Doe" 1
-ADD_BOOK 3 "Algorithms" "Alan Smith" 1
-ADD_BOOK 4 "Database Systems" "Mary Johnson" 1
-ADD_BOOK 5 "Web Development" "Bob Wilson" 1
-ADD_BOOK 6 "Machine Learning" "Sarah Lee" 1
-ADD_BOOK 7 "Network Security" "Mike Brown" 1
-ADD_BOOK 8 "Fundemental Analysis" "Lounis Ferhat" 1
-ADD_BOOK 9 "Data Mining" "John Smith" 1
-ADD_BOOK 10 "Hello" "Weed" 1
+ADD_BOOK 1  "Computer Programming"   "John Smith"      1
+ADD_BOOK 2  "Data Structures"        "Jane Doe"        1
+ADD_BOOK 3  "Algorithms"             "Alan Smith"      1
+ADD_BOOK 4  "Database Systems"       "Mary Johnson"    1
+ADD_BOOK 5  "Web Development"        "Bob Wilson"      1
+ADD_BOOK 6  "Machine Learning"       "Sarah Lee"       2  
+ADD_BOOK 7  "Network Security"       "Mike Brown"      1
+ADD_BOOK 8  "Fundamental Analysis"   "Lounis Ferhat"   1
+ADD_BOOK 9  "Data Mining"            "John Smith"      1
+ADD_BOOK 10 "Cybersecurity"          "Alice Cooper"    1
+ADD_BOOK 11 "Software Engineering"   "Robert Martin"   1
+ADD_BOOK 12 "Operating Systems"      "Andrew Tanenbaum"1
+ADD_BOOK 13 "Artificial Intelligence""Elon Musk"       1
+ADD_BOOK 14 "Cryptography"           "Bruce Schneier"  1
+ADD_BOOK 15 "Cloud Computing"        "Jeff Bezos"      1
+ADD_BOOK 16 "Quantum Computing"      "Richard Feynman" 1
+ADD_BOOK 17 "Mathematics for CS"     "Donald Knuth"    1
+ADD_BOOK 18 "Blockchain Basics"      "Satoshi Nakamoto"1
+ADD_BOOK 19 "Mobile App Development" "Steve Jobs"      1
+ADD_BOOK 20 "Internet of Things"     "Kevin Ashton"    1

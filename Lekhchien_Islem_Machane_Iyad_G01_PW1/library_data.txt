@@ -1,21 +1,58 @@
-# Borrower List Updates
-ADD_BORROWER 1 Bahaa
-ADD_BORROWER 2 Weed
-ADD_BORROWER 3 Sarah
-ADD_BORROWER 4 Lydia
-ADD_BORROWER 5 Beggar    
-ADD_BORROWER 6 Dounia    
-ADD_BORROWER 7 Khadidja
-ADD_BORROWER 8 Rania
+ADD_BORROWER 1  Bahaa
+ADD_BORROWER 2  Weed
+ADD_BORROWER 3  Sarah
+ADD_BORROWER 4  Lydia
+ADD_BORROWER 5  Beggar    
+ADD_BORROWER 6  Dounia    
+ADD_BORROWER 7  Khadidja
+ADD_BORROWER 8  Rania
+ADD_BORROWER 9  Omar
+ADD_BORROWER 10 Yasmine
+ADD_BORROWER 11 Anis
+ADD_BORROWER 12 Karim
+ADD_BORROWER 13 Sofia
+ADD_BORROWER 14 Mohamed
+ADD_BORROWER 15 Amine
 
 # Transactions: Borrowing Books
-BORROW_BOOK 1 1 2025-04-01 1
-BORROW_BOOK 2 2 2025-04-01 1
-BORROW_BOOK 3 3 2025-03-01 1
-BORROW_BOOK 4 4 2025-04-01 1
-BORROW_BOOK 4 5 2025-04-05 1  
+# ✅ Regular Borrowing
+BORROW_BOOK 1  1  2025-04-01  1  # Bahaa borrows "Computer Programming"
+BORROW_BOOK 2  2  2025-04-01  1  # Weed borrows "Data Structures"
+BORROW_BOOK 3  3  2025-03-01  1  # Sarah borrows "Algorithms" (oldest transaction)
+BORROW_BOOK 4  4  2025-04-01  1  # Lydia borrows "Database Systems"
+BORROW_BOOK 5  5  2025-04-05  1  # Beggar borrows "Web Development"
+BORROW_BOOK 6  6  2025-04-10  1  # Dounia borrows "Machine Learning" (1st copy)
+BORROW_BOOK 6  7  2025-04-11  2  # Khadidja borrows "Machine Learning" (2nd copy)
+BORROW_BOOK 7  8  2025-04-12  1  # Rania borrows "Network Security"
+BORROW_BOOK 8  9  2025-04-13  1  # Omar borrows "Fundamental Analysis"
+BORROW_BOOK 9 10  2025-04-14  1  # Yasmine borrows "Data Mining"
+BORROW_BOOK 10 11  2025-04-15  1  # Anis borrows "Cybersecurity"
+BORROW_BOOK 11 12  2025-04-16  1  # Karim borrows "Software Engineering"
+BORROW_BOOK 12 13  2025-04-17  1  # Sofia borrows "Operating Systems"
+BORROW_BOOK 13 14  2025-04-18  1  # Mohamed borrows "Artificial Intelligence"
+BORROW_BOOK 14 15  2025-04-19  1  # Amine borrows "Cryptography"
+
+# ⏳ Borrowing Books That Are Already Loaned (Pending Requests)
+BORROW_BOOK 1  2  2025-04-04  1  # Weed tries to borrow "Computer Programming" (Bahaa has it)
+BORROW_BOOK 6  9  2025-04-12  1  # Omar tries to borrow "Machine Learning" (both copies taken)
+
+# ❌ Invalid Transactions
+BORROW_BOOK 21 10 2025-04-20  1  # Invalid: Non-existent book
+BORROW_BOOK 8  20 2025-04-21  1  # Invalid: Non-existent borrower
+
 # Transactions: Returning Books
-RETURN_BOOK 4 4 2025-04-23
+# ✅ Valid Returns
+RETURN_BOOK 4  4  2025-04-23  # Lydia returns "Database Systems"
+RETURN_BOOK 5  5  2025-04-30  # Beggar returns "Web Development" late
+RETURN_BOOK 3  3  2025-04-01  # Sarah returns "Algorithms" late
+RETURN_BOOK 2  2  2025-04-05  # Weed returns "Data Structures" early
+RETURN_BOOK 6  7  2025-04-20  # Khadidja returns "Machine Learning"
+RETURN_BOOK 7  8  2025-04-21  # Rania returns "Network Security"
+RETURN_BOOK 8  9  2025-04-22  # Omar returns "Fundamental Analysis"
+RETURN_BOOK 9 10  2025-04-25  # Yasmine returns "Data Mining" late
+RETURN_BOOK 10 11 2025-04-30  # Anis returns "Cybersecurity" late
+RETURN_BOOK 1  1  2025-04-02  # Bahaa returns "Computer Programming" early
 
-
-
+# ❌ Invalid Returns
+RETURN_BOOK 11 1  2025-04-30  # Invalid: Returning a non-existent book
+RETURN_BOOK 2  99 2025-04-06  # Invalid: Non-existent borrower trying to return a book

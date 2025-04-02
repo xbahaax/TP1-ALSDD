@@ -380,7 +380,7 @@ void processReturnBook(char *line, Loan **activeLoanList, Loan **pendingLoanList
 
 // Function to process Library Data from the file
 void loadLibraryData(const char *filename, Borrower **borrowerList, Loan **activeLoanList,
-    Loan **pendingLoanList, Loan **returnedLoanList, Book *bookList);
+    Loan **pendingLoanList, Loan **returnedLoanList, Book *bookList,int choice);
 
 
 #endif
