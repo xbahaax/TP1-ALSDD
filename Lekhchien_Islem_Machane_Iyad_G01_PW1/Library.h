@@ -47,6 +47,7 @@ typedef struct Loan {
     Date return_date;
     int overdue;
     struct Loan *next;
+    struct Loan *prev;
 } Loan;
 
 // --------------------------------- Abstracht Machine Part -----------------------------------------------------
@@ -149,6 +150,9 @@ int getLoanOverdue(Loan *l);
 // Function to get the next Loan structure Pointer
 Loan* getLoanNext(Loan *l);
 
+// Function to get the previous Loan structure Pointer
+Loan* getLoanPrev(Loan *b);
+
 // Function to set a Loan Borrower Structure Pointer
 void setLoanBorrower(Loan *l, Borrower *b);
 
@@ -169,6 +173,9 @@ void setLoanOverdue(Loan *l, int overdue);
 
 // Function to set the next Loan structure Pointer
 void setLoanNext(Loan *l, Loan *next);
+
+// Function to set the previous Loan structure Pointer
+void setLoanPrev(Loan *l, Loan *prev);
 
 // Function to set a whole Loan structure
 void setLoan(Loan *l, Borrower *b, Book *bk, int priority,int overdue);
