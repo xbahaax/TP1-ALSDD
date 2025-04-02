@@ -299,6 +299,15 @@ void statisticsMenu(Book **bk,Borrower **b,Loan **active,Loan **pending,Loan **r
 // Function to Display the sub Menu for borrowers manipulation
 void BorrowersMenu(Borrower **b);
 
+// Function to process Return
+void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanList, Loan **pendingLoanList,
+    Loan **returnedLoanList, Book *bookList);
+
+// Function to process Borrow
+void processBorrow(int book_id, int borrower_id, Date date, int priority,
+    Borrower **borrowerList, Loan **activeLoanList,
+    Loan **pendingLoanList, Book *bookList);
+
 // Function to manipulate adding a book via the user interface
 void addBook(Book **bookList);
 
