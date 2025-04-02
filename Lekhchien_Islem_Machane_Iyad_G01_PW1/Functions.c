@@ -65,7 +65,7 @@ void setBookPrev(Book *b, Book *prev)
 }
 
 
-void setBook(Book *b, int id, char title[], char author[], int copies ) 
+void setBook(Book *b, int id, char title[], char author[], int copies )
 {
     setBookID(b, id);
     setBookTitle(b, title);
@@ -215,7 +215,7 @@ void setLoanOverdue(Loan *l, int overdue)
 
 
 void setLoanNext(Loan *l, Loan *next)
-{ 
+{
     l->next = next;
 }
 
@@ -406,13 +406,13 @@ Loan* insertLoan(Loan *head, Borrower *b, Book *bk, int priority, Date borrow_da
     setBorrowDate(newLoan, borrow_date);
     setReturnDate(newLoan, return_date);
     setLoanNext(newLoan, NULL);
-    setLoanPrev(newLoan, NULL);  
+    setLoanPrev(newLoan, NULL);
     setLoanOverdue(newLoan, overdue);
     // case where the list is empty
     if (head == NULL || getLoanPriority(head) > priority) {
         setLoanNext(newLoan, head);
         if (head != NULL) {
-            setLoanPrev(head, newLoan);  
+            setLoanPrev(head, newLoan);
         }
         return newLoan;
     }
@@ -422,15 +422,15 @@ Loan* insertLoan(Loan *head, Borrower *b, Book *bk, int priority, Date borrow_da
         current = getLoanNext(current);
     }
 
-    setLoanNext(newLoan, getLoanNext(current));  
-    setLoanPrev(newLoan, current);              
+    setLoanNext(newLoan, getLoanNext(current));
+    setLoanPrev(newLoan, current);
 
     if (getLoanNext(current) != NULL) {
-        setLoanPrev(getLoanNext(current), newLoan);  
+        setLoanPrev(getLoanNext(current), newLoan);
     }
-    setLoanNext(current, newLoan);              
+    setLoanNext(current, newLoan);
 
-    return head;  
+    return head;
 }
 
 // ----------------------------------------- Date functions -----------------------------------------//
@@ -508,7 +508,7 @@ void overdue(Loan *l) {
     while (l != NULL) {
         if (compare_date(l)) { // if this returns 1 then the book return date is overdue
             printf("\nLoan is Overdued !!! - Borrower: %s, Book: %s\n",
-                getBorrowerName(getLoanBorrower(l)), 
+                getBorrowerName(getLoanBorrower(l)),
                 getBookTitle(getLoanBook(l)));
         }
         l = getLoanNext(l);
@@ -535,7 +535,7 @@ int isValidDate(Date date) {
 // Function to input and validate a date
 void inputDate(Date *date,char* prompt) {
     int valid = 0;
-    
+
     while (!valid) {
         printf("%s", prompt);// prompt the user for date
         if (scanf("%d-%d-%d", &date->year, &date->month, &date->day) == 3) {
@@ -546,7 +546,7 @@ void inputDate(Date *date,char* prompt) {
             }
         } else {
             printf("Invalid format. Please enter in YYYY-MM-DD format.\n"); // invalid format
-            while (getchar() != '\n'); 
+            while (getchar() != '\n');
         }
     }
 }
@@ -624,7 +624,7 @@ void pauseScreen() {
 int getIntInput(char* prompt) {
     int value;
     char ch;
-    
+
     while (1) {
         printf("%s", prompt);
         if (scanf("%d", &value) == 1) {
@@ -777,7 +777,7 @@ void FilesMenu(Book **bk, Loan **active, Loan **pending, Loan **returned, Borrow
         printf("|   5. Load All the library Data                |\n");
         printf("|   6. Return to Main Menu                      |\n");
         printf("=================================================\n");
-        
+
         choice = getIntInput("Enter your choice: ");
 
         switch (choice) {
@@ -891,7 +891,7 @@ void BorrowersMenu(Borrower **b){
 
 // ------------------------------------------ Function to process loans ------------------------------------------ //
 // ------------------------------------ Function to process book return --------------------------------
-void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanList, 
+void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanList,
     Loan **pendingLoanList, Loan **returnedLoanList, Book *bookList) {
         // Find the loan (no need for extra traversal since 'prev' is stored)
         Loan *loan = findActiveLoan(*activeLoanList, book_id, borrower_id);
@@ -924,7 +924,7 @@ void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanLis
             setLoanPrev(getLoanNext(loan), getLoanPrev(loan));
         }
         // This part is to process when there is a pending loan for the same book
-    // Process pending loans 
+    // Process pending loans
     Loan *pendingLoan = *pendingLoanList;
     Loan *highestPriorityLoan = NULL;
     int highestPriority = -1;
@@ -946,7 +946,7 @@ void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanLis
     }
 
     if (highestPriorityLoan != NULL) {
-        // Remove from pending list 
+        // Remove from pending list
         if (getLoanPrev(highestPriorityLoan) != NULL) {
         setLoanNext(getLoanPrev(highestPriorityLoan), getLoanNext(highestPriorityLoan));
         } else {
@@ -1274,7 +1274,7 @@ void searchBooksByName(Book *bookList) {
 
         Book *current = bookList;
         while (current != NULL) {
-            // making a lower case copy of the book title to ensure all results are displayed
+            // Case-insensitive search (convert both to lowercase for comparison)
             char bookTitle[100];
             char searchTermLower[100];
 
@@ -1292,7 +1292,7 @@ void searchBooksByName(Book *bookList) {
                     searchTermLower[i] += 32;
             }
 
-            // looks for search term substring
+            // Check if search term is contained in the book title
             if (strstr(bookTitle, searchTermLower) != NULL) {
                 print_book_ligne(current);
                 print_ligne();
@@ -1305,12 +1305,11 @@ void searchBooksByName(Book *bookList) {
         if (!found) {
             printf("|No books found matching %-69s|\n", searchTerm);
             print_ligne();
-            return;
         }
     } else {
         printf("\nNo books available.\n");
     }
-    return;
+
     pauseScreen();
 }
 
@@ -1359,18 +1358,18 @@ void printReturnSystemExplanation() {
     printf("   - Enter the return date (YYYY-MM-DD)\n");
     printf("   - System verifies the active loan exists\n");
     printf("   - Records the return and checks for overdue status\n\n");
-    
+
     printf("2. AFTER RETURN:\n");
     printf("   a) If pending requests exist:\n");
     printf("      * Processes highest priority request automatically\n");
     printf("      * The borrow date of the pending request is set to the return date of the returned book\n");
     printf("      * New loan starts immediately (14-day due date)\n");
     printf("      * Book stays checked out\n\n");
-    
+
     printf("   b) If no pending requests:\n");
     printf("      * Available copies increase by 1\n");
     printf("      * Book becomes available for new loans\n\n");
-    
+
     printf("3. OVERDUE MANAGEMENT:\n");
     printf("   - Overdue status is determined at return time\n");
     printf("   - All active loans can be checked for overdue status\n");
@@ -1378,7 +1377,7 @@ void printReturnSystemExplanation() {
     printf("     * 'Check Overdue Loans'\n");
     printf("     * Shows all loans past their due date\n");
     printf("     * Updated daily based on system date\n\n");
-    
+
     printf("4. RECORD KEEPING:\n");
     printf("   - Returned books move to loan history\n");
     printf("   - Overdue returns remain in system records\n");
@@ -1472,7 +1471,7 @@ void processReturnBook(char *line, Loan **activeLoanList, Loan **pendingLoanList
 }
 
 
-// This function just parses the line and passes the data to multiple functions 
+// This function just parses the line and passes the data to multiple functions
 // first there was only one case where all the data was loaded at once
 // now adding 3 cases by a variable passed the function in the menu (choice)
 // Giving the user more freedoom loading data and tracking it
