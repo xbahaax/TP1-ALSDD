@@ -296,6 +296,9 @@ void FilesMenu(Book **bk,Loan **active,Loan **pending,Loan **returned,Borrower *
 // Function to Display the sub Menu for library statistics
 void statisticsMenu(Book **bk,Borrower **b,Loan **active,Loan **pending,Loan **returned);
 
+// Function to Display the sub Menu for borrowers manipulation
+void BorrowersMenu(Borrower **b);
+
 // Function to manipulate adding a book via the user interface
 void addBook(Book **bookList);
 

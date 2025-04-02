@@ -6,3 +6,5 @@ ADD_BOOK 5 "Web Development" "Bob Wilson" 1
 ADD_BOOK 6 "Machine Learning" "Sarah Lee" 1
 ADD_BOOK 7 "Network Security" "Mike Brown" 1
 ADD_BOOK 8 "Fundemental Analysis" "Lounis Ferhat" 1
+ADD_BOOK 9 "Data Mining" "John Smith" 1
+ADD_BOOK 10 "Hello" "Weed" 1

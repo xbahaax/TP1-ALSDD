@@ -557,9 +557,10 @@ void displayMenu(Book **books, Loan **activeloans, Loan **pendingloans, Loan **r
         printf("|    1. Book Management                        |\n");
         printf("|    2. Loans Management                       |\n");
         printf("|    3. Files Management                       |\n");
-        printf("|    4. Library Statistics                     |\n");
-        printf("|    5. Check Overdue                          |\n");
-        printf("|    6. Exit System                            |\n");
+        printf("|    4. Borrower Management                    |\n");
+        printf("|    5. Library Statistics                     |\n");
+        printf("|    6. Check Overdue                          |\n");
+        printf("|    7. Exit System                            |\n");
         printf("================================================\n");
         choice = getIntInput("Enter your choice: ");
 
@@ -574,13 +575,16 @@ void displayMenu(Book **books, Loan **activeloans, Loan **pendingloans, Loan **r
                 FilesMenu(books,activeloans,pendingloans,returnedloans,borrowers);
                 break;
             case 4:
-                statisticsMenu(books,borrowers,activeloans,pendingloans,returnedloans);
+                BorrowersMenu(borrowers);
                 break;
             case 5:
+                statisticsMenu(books,borrowers,activeloans,pendingloans,returnedloans);
+                break;
+            case 6:
                 overdue(&activeloans);
                 pauseScreen();
                 break;
-            case 6:
+            case 7:
                 printf("Exiting system...\n");
                 return;
             default:
@@ -673,7 +677,6 @@ void FilesMenu(Book **bk, Loan **active, Loan **pending, Loan **returned, Borrow
                 // Ensure to clear the buffer before getting string input
                 getStringInput("Enter the file name: ", filename, sizeof(filename));
                 loadBooksFromFile(filename, bk);
-                pauseScreen();
                 break;
 
             case 2:
@@ -732,9 +735,37 @@ void statisticsMenu(Book **bk,Borrower **b,Loan **active,Loan **pending,Loan **r
         case 6:
             return;
         default:
+            printf("Invalid choice. Please choose a valid option.\n");
             break;
         }
     }while(1);
+}
+
+void BorrowersMenu(Borrower **b){
+    int choice;
+    do {
+        system(CLEAR_SCREEN);
+        printf("\n========== BORROWERS ==========================\n");
+        printf("|   1. Add a new borrower                      |\n");
+        printf("|   2. List borrowers                          |\n");
+        printf("|   3. Return to Main Menu                     |\n");
+        printf("===============================================\n");
+        choice = getIntInput("Enter your choice: ");
+        switch (choice)
+        {
+            case 1:
+                addBorrower(b);
+                pauseScreen();
+            break;
+            case 2:
+                print_borrowers(*b);
+            break;
+            case 3:
+                return;
+            default:
+            printf("Invalid choice. Please choose a valid option.\n");
+}
+}while (1);
 }
 
 
