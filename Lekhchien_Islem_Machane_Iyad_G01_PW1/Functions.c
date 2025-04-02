@@ -399,6 +399,45 @@ int compare_date(Loan *l) {
     return 0;  // Not overdue
 }
 
+// Function to compare two dates
+int compareDates(Date date1, Date date2) {
+    if (date1.year < date2.year) {
+        return -1; // return -1 if the date1 is < date2
+    } else if (date1.year > date2.year) {
+        return 1;// return 1 if the date1 is > date2
+    } else {
+        if (date1.month < date2.month) {
+            return -1; // return -1 if the date1 is < date2
+        } else if (date1.month > date2.month) {
+            return 1;// return 1 if the date1 is > date2
+        } else {
+            if (date1.day < date2.day) {
+                return -1; // return -1 if the date1 is < date2
+            } else if (date1.day > date2.day) {
+                return 1;// return 1 if the date1 is > date2
+            } else {
+                return 0;// Those two dates are equal
+            }
+        }
+    }
+}
+
+Date addDaysToDate(Date date, int days) {
+    date.day += days;
+
+    while (date.day > 30) {
+        date.day -= 30;
+        date.month++;
+
+        if (date.month > 12) {
+            date.month = 1;
+            date.year++;
+        }
+    }
+
+    return date;
+}
+
 
 void overdue(Loan *l) {
     while (l != NULL) {
@@ -472,46 +511,6 @@ int validateLoanRequest(Book *book, Borrower *borrower, Loan *activeLoanList) {
     return 1; // Valid request
 }
 
-
-Date addDaysToDate(Date date, int days) {
-    date.day += days;
-
-    while (date.day > 30) {
-        date.day -= 30;
-        date.month++;
-
-        if (date.month > 12) {
-            date.month = 1;
-            date.year++;
-        }
-    }
-
-    return date;
-}
-
-
-// Function to compare two dates
-int compareDates(Date date1, Date date2) {
-    if (date1.year < date2.year) {
-        return -1; // return -1 if the date1 is < date2
-    } else if (date1.year > date2.year) {
-        return 1;// return 1 if the date1 is > date2
-    } else {
-        if (date1.month < date2.month) {
-            return -1; // return -1 if the date1 is < date2
-        } else if (date1.month > date2.month) {
-            return 1;// return 1 if the date1 is > date2
-        } else {
-            if (date1.day < date2.day) {
-                return -1; // return -1 if the date1 is < date2
-            } else if (date1.day > date2.day) {
-                return 1;// return 1 if the date1 is > date2
-            } else {
-                return 0;// Those two dates are equal
-            }
-        }
-    }
-}
 
 
 void pauseScreen() {
@@ -881,6 +880,129 @@ void AddLoan(Borrower **borrowerList, Loan **activeLoanList,
     }
 }
 
+
+void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
+    Loan **returnedLoanList, Book *bookList) {
+    int borrower_id, book_id, overdue;
+    Date date;
+
+    // Get Book ID from user input
+    book_id = getIntInput("Enter Book ID: ");
+
+    // Get Borrower ID from user input
+    borrower_id = getIntInput("Enter Borrower ID: ");
+
+    // Get Return Date in YYYY-MM-DD format
+    printf("Enter Return Date (YYYY-MM-DD): ");
+    while (scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3 ) {
+        while (getchar() != '\n'); // Clear invalid input
+        printf("Invalid date format or invalid date. Please enter in YYYY-MM-DD format: ");
+    }
+    while (getchar() != '\n'); // Clear input buffer after date input
+
+    // Search for the loan in the active loan list
+    Loan *loan = *activeLoanList;
+    Loan *prev = NULL;
+    Book *book = findBookById(bookList, book_id);
+
+    // Find the loan in the active list
+    while (loan != NULL) {
+        if (getBookID(getLoanBook(loan)) == book_id &&
+            getBorrowerID(getLoanBorrower(loan)) == borrower_id) {
+            break;
+        }
+        prev = loan;
+        loan = getLoanNext(loan);
+    }
+
+    if (loan != NULL) {
+        // Check if the book is overdue
+        overdue = (compareDates(date, getReturnDate(loan)) > 0) ? 1 : 0;
+
+        // Move the loan to the returned loan list
+        *returnedLoanList = insertLoan(*returnedLoanList, getLoanBorrower(loan),
+            getLoanBook(loan), getLoanPriority(loan),
+            getBorrowDate(loan), date, overdue);
+
+        printf("\nReturned book ID %d by borrower ID %d\n", book_id, borrower_id);
+
+        // Remove the loan from the active loan list
+        if (prev) {
+            setLoanNext(prev, getLoanNext(loan));
+        } else {
+            *activeLoanList = getLoanNext(loan);
+        }
+
+        // Now, try to find and process the highest priority pending loan for the same book
+        Loan *pendingLoan = *pendingLoanList;
+        Loan *prevPending = NULL;
+        Loan *highestPriorityLoan = NULL;
+        Loan *highestPrevPending = NULL;
+        int highestPriority = -1;
+
+        while (pendingLoan != NULL) {
+            if (getBookID(getLoanBook(pendingLoan)) == book_id &&
+                getLoanPriority(pendingLoan) > highestPriority) {
+                highestPriority = getLoanPriority(pendingLoan);
+                highestPriorityLoan = pendingLoan;
+                highestPrevPending = prevPending;
+            };
+            // If the priority is equal , the earliest pending loan has priority
+            if (getBookID(getLoanBook(pendingLoan)) == book_id &&
+                getLoanPriority(pendingLoan) == highestPriority) {
+                    // Compare borrow dates to decide which loan has higher precedence
+                    if (compareDates(getBorrowDate(pendingLoan), getBorrowDate(highestPriorityLoan)) < 0) {
+                    highestPriorityLoan = pendingLoan;
+                    highestPrevPending = prevPending;
+                    }
+                }
+    
+    // Update highestPriority (if needed)
+    highestPriority = getLoanPriority(pendingLoan);
+            prevPending = pendingLoan;
+            pendingLoan = getLoanNext(pendingLoan);
+        }
+
+        // If there's a pending loan with a higher priority, process it
+        if (highestPriorityLoan != NULL) {
+            // Remove from pending list
+            if (highestPrevPending != NULL) {
+                setLoanNext(highestPrevPending, getLoanNext(highestPriorityLoan));
+            } else {
+                *pendingLoanList = getLoanNext(highestPriorityLoan);
+            }
+
+            // Set dates for the new active loan
+            setBorrowDate(highestPriorityLoan, date);
+            Date return_date = addDaysToDate(date, 14);
+            setReturnDate(highestPriorityLoan, return_date);
+
+            // Add to active list (without creating a new node)
+            setLoanNext(highestPriorityLoan, *activeLoanList);
+            *activeLoanList = highestPriorityLoan;
+
+            printf("Book loaned to next pending borrower (Priority: %d)!\n",
+                getLoanPriority(highestPriorityLoan));
+        } else {
+            // No pending loans, increment book copies
+            if (book != NULL) {
+                setBookCopies(book, getBookCopies(book) + 1);
+                printf("Book returned, copies increased to %d!\n", getBookCopies(book));
+            }
+        }
+
+        // Free the original loan node (only if we didn't reuse the pending loan)
+        if (highestPriorityLoan != loan) {
+            free(loan);
+        }
+        return;
+    }
+
+    // If no active loan was found for the specified book and borrower
+    printf("\nError: No active loan found for Book ID %d and Borrower ID %d\n", book_id, borrower_id);
+}
+
+
 // Function to display all loans (active, pending, and returned)
 void print_AllLoans(Loan *activeLoanList, Loan *pendingLoanList, Loan *returnedLoanList) {
     printf("\n========== ALL LOANS ==========\n");
@@ -1105,6 +1227,78 @@ void searchBooksByName(Book *bookList) {
     return;
     pauseScreen();
 }
+
+
+void Herosec(){
+    system("cls");
+    printf("\t\t\t\t%ccole nationale sup%crieur d'informatique \n",130,130);
+    printf("\t\t\t  .----------------.  .----------------.  .----------------.\n");
+    printf("\t\t\t | .--------------. || .--------------. || .--------------. |\n");
+    printf("\t\t\t | |  _________   | || |    _______   | || |     _____    | |\n");
+    printf("\t\t\t | | |_   ___  |  | || |   /  ___  |  | || |    |_   _|   | |\n");
+    printf("\t\t\t | |   | |_  \\_|  | || |  |  (__ \\_|  | || |      | |     | |\n");
+    printf("\t\t\t | |   |  _|  _   | || |   \'.___`-.   | || |      | |     | |\n");
+    printf("\t\t\t | |  _| |___/ |  | || |  |`\\____) |  | || |     _| |_    | |\n");
+    printf("\t\t\t | | |_________|  | || |  |_______.\'  | || |    |_____|   | |\n");
+    printf("\t\t\t | |              | || |              | || |              | |\n");
+    printf("\t\t\t | \'--------------\' || \'--------------\' || \'--------------\' |\n");
+    printf("\t\t\t  \'----------------\'  \'----------------\'  \'----------------\'\n");
+    Sleep(1000);
+    printf("\t\t\t\tCPI - 1%cre Ann%ce - Ann%ce Universitaire 2024/2025 \n", 138, 130, 130);
+    printf("\t\t\t ____________________________________________________________\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t| Designed & Coded By : Lekhchine Islem Bahaa Eddine         |\n");
+    printf("\t\t\t|                                  &                         |\n");
+    printf("\t\t\t|                             Machane Mohamed Iyad           |\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t|         \tSECTION : A           GROUPE: 01             |\n");
+    printf("\t\t\t|                      \t  TP1 ALSDD                          |\n");
+    printf("\t\t\t|      \t Library Management System (LMS)                     |\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t| Supervised by: Ms. Artabaz Saliha                          |\n");
+    printf("\t\t\t|____________________________________________________________|\n\n\n");
+    printf("\t\t\t _____________________________________________________________\n");
+    printf("\t\t\t| Note!! Press the 'ENTER' key to access the Menu             |\n");
+    printf("\t\t\t|_____________________________________________________________|\n");
+}
+
+
+void printReturnSystemExplanation() {
+    printf("\n=== BOOK RETURN SYSTEM EXPLANATION ===\n");
+    printf("1. RETURN PROCESS:\n");
+    printf("   - The default borrow period is 14 days , which is setted by the system when borrowing a book\n");
+    printf("   - Enter Book ID and Borrower ID\n");
+    printf("   - Enter the return date (YYYY-MM-DD)\n");
+    printf("   - System verifies the active loan exists\n");
+    printf("   - Records the return and checks for overdue status\n\n");
+    
+    printf("2. AFTER RETURN:\n");
+    printf("   a) If pending requests exist:\n");
+    printf("      * Processes highest priority request automatically\n");
+    printf("      * The borrow date of the pending request is set to the return date of the returned book\n");
+    printf("      * New loan starts immediately (14-day due date)\n");
+    printf("      * Book stays checked out\n\n");
+    
+    printf("   b) If no pending requests:\n");
+    printf("      * Available copies increase by 1\n");
+    printf("      * Book becomes available for new loans\n\n");
+    
+    printf("3. OVERDUE MANAGEMENT:\n");
+    printf("   - Overdue status is determined at return time\n");
+    printf("   - All active loans can be checked for overdue status\n");
+    printf("     from the main menu option:\n");
+    printf("     * 'Check Overdue Loans'\n");
+    printf("     * Shows all loans past their due date\n");
+    printf("     * Updated daily based on system date\n\n");
+    
+    printf("4. RECORD KEEPING:\n");
+    printf("   - Returned books move to loan history\n");
+    printf("   - Overdue returns remain in system records\n");
+    printf("===============================\n\n");
+}
+
 
 void loadBooksFromFile(const char *filename, Book **bookList) {
     FILE *file = fopen(filename, "r");
@@ -1350,192 +1544,3 @@ void loadLibraryData(const char *filename, Borrower **borrowerList, Loan **activ
 }
 
 
-void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
-    Loan **returnedLoanList, Book *bookList) {
-    int borrower_id, book_id, overdue;
-    Date date;
-
-    // Get Book ID from user input
-    book_id = getIntInput("Enter Book ID: ");
-
-    // Get Borrower ID from user input
-    borrower_id = getIntInput("Enter Borrower ID: ");
-
-    // Get Return Date in YYYY-MM-DD format
-    printf("Enter Return Date (YYYY-MM-DD): ");
-    while (scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3 ) {
-        while (getchar() != '\n'); // Clear invalid input
-        printf("Invalid date format or invalid date. Please enter in YYYY-MM-DD format: ");
-    }
-    while (getchar() != '\n'); // Clear input buffer after date input
-
-    // Search for the loan in the active loan list
-    Loan *loan = *activeLoanList;
-    Loan *prev = NULL;
-    Book *book = findBookById(bookList, book_id);
-
-    // Find the loan in the active list
-    while (loan != NULL) {
-        if (getBookID(getLoanBook(loan)) == book_id &&
-            getBorrowerID(getLoanBorrower(loan)) == borrower_id) {
-            break;
-        }
-        prev = loan;
-        loan = getLoanNext(loan);
-    }
-
-    if (loan != NULL) {
-        // Check if the book is overdue
-        overdue = (compareDates(date, getReturnDate(loan)) > 0) ? 1 : 0;
-
-        // Move the loan to the returned loan list
-        *returnedLoanList = insertLoan(*returnedLoanList, getLoanBorrower(loan),
-            getLoanBook(loan), getLoanPriority(loan),
-            getBorrowDate(loan), date, overdue);
-
-        printf("\nReturned book ID %d by borrower ID %d\n", book_id, borrower_id);
-
-        // Remove the loan from the active loan list
-        if (prev) {
-            setLoanNext(prev, getLoanNext(loan));
-        } else {
-            *activeLoanList = getLoanNext(loan);
-        }
-
-        // Now, try to find and process the highest priority pending loan for the same book
-        Loan *pendingLoan = *pendingLoanList;
-        Loan *prevPending = NULL;
-        Loan *highestPriorityLoan = NULL;
-        Loan *highestPrevPending = NULL;
-        int highestPriority = -1;
-
-        while (pendingLoan != NULL) {
-            if (getBookID(getLoanBook(pendingLoan)) == book_id &&
-                getLoanPriority(pendingLoan) > highestPriority) {
-                highestPriority = getLoanPriority(pendingLoan);
-                highestPriorityLoan = pendingLoan;
-                highestPrevPending = prevPending;
-            };
-            // If the priority is equal , the earliest pending loan has priority
-            if (getBookID(getLoanBook(pendingLoan)) == book_id &&
-                getLoanPriority(pendingLoan) == highestPriority) {
-                    // Compare borrow dates to decide which loan has higher precedence
-                    if (compareDates(getBorrowDate(pendingLoan), getBorrowDate(highestPriorityLoan)) < 0) {
-                    highestPriorityLoan = pendingLoan;
-                    highestPrevPending = prevPending;
-                    }
-                }
-    
-    // Update highestPriority (if needed)
-    highestPriority = getLoanPriority(pendingLoan);
-            prevPending = pendingLoan;
-            pendingLoan = getLoanNext(pendingLoan);
-        }
-
-        // If there's a pending loan with a higher priority, process it
-        if (highestPriorityLoan != NULL) {
-            // Remove from pending list
-            if (highestPrevPending != NULL) {
-                setLoanNext(highestPrevPending, getLoanNext(highestPriorityLoan));
-            } else {
-                *pendingLoanList = getLoanNext(highestPriorityLoan);
-            }
-
-            // Set dates for the new active loan
-            setBorrowDate(highestPriorityLoan, date);
-            Date return_date = addDaysToDate(date, 14);
-            setReturnDate(highestPriorityLoan, return_date);
-
-            // Add to active list (without creating a new node)
-            setLoanNext(highestPriorityLoan, *activeLoanList);
-            *activeLoanList = highestPriorityLoan;
-
-            printf("Book loaned to next pending borrower (Priority: %d)!\n",
-                getLoanPriority(highestPriorityLoan));
-        } else {
-            // No pending loans, increment book copies
-            if (book != NULL) {
-                setBookCopies(book, getBookCopies(book) + 1);
-                printf("Book returned, copies increased to %d!\n", getBookCopies(book));
-            }
-        }
-
-        // Free the original loan node (only if we didn't reuse the pending loan)
-        if (highestPriorityLoan != loan) {
-            free(loan);
-        }
-        return;
-    }
-
-    // If no active loan was found for the specified book and borrower
-    printf("\nError: No active loan found for Book ID %d and Borrower ID %d\n", book_id, borrower_id);
-}
-
-void Herosec(){
-    system("cls");
-    printf("\t\t\t\t%ccole nationale sup%crieur d'informatique \n",130,130);
-    printf("\t\t\t  .----------------.  .----------------.  .----------------.\n");
-    printf("\t\t\t | .--------------. || .--------------. || .--------------. |\n");
-    printf("\t\t\t | |  _________   | || |    _______   | || |     _____    | |\n");
-    printf("\t\t\t | | |_   ___  |  | || |   /  ___  |  | || |    |_   _|   | |\n");
-    printf("\t\t\t | |   | |_  \\_|  | || |  |  (__ \\_|  | || |      | |     | |\n");
-    printf("\t\t\t | |   |  _|  _   | || |   \'.___`-.   | || |      | |     | |\n");
-    printf("\t\t\t | |  _| |___/ |  | || |  |`\\____) |  | || |     _| |_    | |\n");
-    printf("\t\t\t | | |_________|  | || |  |_______.\'  | || |    |_____|   | |\n");
-    printf("\t\t\t | |              | || |              | || |              | |\n");
-    printf("\t\t\t | \'--------------\' || \'--------------\' || \'--------------\' |\n");
-    printf("\t\t\t  \'----------------\'  \'----------------\'  \'----------------\'\n");
-    Sleep(1000);
-    printf("\t\t\t\tCPI - 1%cre Ann%ce - Ann%ce Universitaire 2024/2025 \n", 138, 130, 130);
-    printf("\t\t\t ____________________________________________________________\n");
-    printf("\t\t\t|                                                            |\n");
-    printf("\t\t\t| Designed & Coded By : Lekhchine Islem Bahaa Eddine         |\n");
-    printf("\t\t\t|                                  &                         |\n");
-    printf("\t\t\t|                             Machane Mohamed Iyad           |\n");
-    printf("\t\t\t|                                                            |\n");
-    printf("\t\t\t|                                                            |\n");
-    printf("\t\t\t|         \tSECTION : A           GROUPE: 01             |\n");
-    printf("\t\t\t|                      \t  TP1 ALSDD                          |\n");
-    printf("\t\t\t|      \t Library Management System (LMS)                     |\n");
-    printf("\t\t\t|                                                            |\n");
-    printf("\t\t\t|                                                            |\n");
-    printf("\t\t\t| Supervised by: Ms. Artabaz Saliha                          |\n");
-    printf("\t\t\t|____________________________________________________________|\n\n\n");
-    printf("\t\t\t _____________________________________________________________\n");
-    printf("\t\t\t| Note!! Press the 'ENTER' key to access the Menu             |\n");
-    printf("\t\t\t|_____________________________________________________________|\n");
-}
-
-void printReturnSystemExplanation() {
-    printf("\n=== BOOK RETURN SYSTEM EXPLANATION ===\n");
-    printf("1. RETURN PROCESS:\n");
-    printf("   - The default borrow period is 14 days , which is setted by the system when borrowing a book\n");
-    printf("   - Enter Book ID and Borrower ID\n");
-    printf("   - Enter the return date (YYYY-MM-DD)\n");
-    printf("   - System verifies the active loan exists\n");
-    printf("   - Records the return and checks for overdue status\n\n");
-    
-    printf("2. AFTER RETURN:\n");
-    printf("   a) If pending requests exist:\n");
-    printf("      * Processes highest priority request automatically\n");
-    printf("      * The borrow date of the pending request is set to the return date of the returned book\n");
-    printf("      * New loan starts immediately (14-day due date)\n");
-    printf("      * Book stays checked out\n\n");
-    
-    printf("   b) If no pending requests:\n");
-    printf("      * Available copies increase by 1\n");
-    printf("      * Book becomes available for new loans\n\n");
-    
-    printf("3. OVERDUE MANAGEMENT:\n");
-    printf("   - Overdue status is determined at return time\n");
-    printf("   - All active loans can be checked for overdue status\n");
-    printf("     from the main menu option:\n");
-    printf("     * 'Check Overdue Loans'\n");
-    printf("     * Shows all loans past their due date\n");
-    printf("     * Updated daily based on system date\n\n");
-    
-    printf("4. RECORD KEEPING:\n");
-    printf("   - Returned books move to loan history\n");
-    printf("   - Overdue returns remain in system records\n");
-    printf("===============================\n\n");
-}

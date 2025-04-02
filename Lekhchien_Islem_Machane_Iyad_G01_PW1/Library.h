@@ -308,6 +308,10 @@ void addBorrower(Borrower **borrowerList) ;
 // Function to manipulate adding a loan via the user interface
 void AddLoan(Borrower **borrowerList, Loan **activeLoanList,Loan **pendingLoanList, Book *bookList);
 
+// Function to process returning a book via user interface
+void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
+    Loan **returnedLoanList, Book *bookList);
+    
 // Function to display all loans (active, pending, and returned)
 void print_AllLoans(Loan *activeLoanList, Loan *pendingLoanList, Loan *returnedLoanList);
 
@@ -351,9 +355,6 @@ void print_Loans(Borrower *b, Book *bk, Loan *l);
 // Function to search for a book by title and display results as table
 void searchBooksByName(Book *bookList);
 
-// Function to process returning a book via user interface
-void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
-    Loan **returnedLoanList, Book *bookList);
 
 // Function to display opening interface
 void Herosec();
