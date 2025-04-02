@@ -581,7 +581,7 @@ void displayMenu(Book **books, Loan **activeloans, Loan **pendingloans, Loan **r
                 statisticsMenu(books,borrowers,activeloans,pendingloans,returnedloans);
                 break;
             case 6:
-                overdue(&activeloans);
+                overdue(*activeloans);
                 pauseScreen();
                 break;
             case 7:
@@ -1189,95 +1189,91 @@ void processReturnBook(char *line, Loan **activeLoanList, Loan **pendingLoanList
     if (sscanf(line, "RETURN_BOOK %d %d %d-%d-%d", &book_id, &borrower_id,
                 &date.year, &date.month, &date.day) == 5) {
         
-        // Check if the loan exists in the active loans list
+        // find if the loan exists in active loans
         Loan *loan = findActiveLoan(*activeLoanList, book_id, borrower_id);
+        
         if (loan != NULL) {
             Book *book = findBookById(bookList, book_id);
             
-            // Verify that the loan matches the given book and borrower
-            if (getBookID(getLoanBook(loan)) == book_id &&
-                getBorrowerID(getLoanBorrower(loan)) == borrower_id) {
+            // for proper removal from the active list
+            Loan *prevActive = NULL;
+            Loan *current = *activeLoanList;
+            while (current != NULL && current != loan) {
+                prevActive = current;
+                current = getLoanNext(current);
+            }
 
-                // Check if the book is overdue
-                overdue = (compareDates(date, getReturnDate(loan)) > 0) ? 1 : 0;
+            // Check if the book is overdue
+            overdue = (compareDates(date, getReturnDate(loan)) > 0) ? 1 : 0;
 
-                // Move loan to returned loan list
-                *returnedLoanList = insertLoan(*returnedLoanList, getLoanBorrower(loan),
-                                                getLoanBook(loan), getLoanPriority(loan),
-                                                getBorrowDate(loan), date, overdue);
-                printf("Returned book ID %d by borrower ID %d\n", book_id, borrower_id);
+            // Move loan to returned loan list
+            *returnedLoanList = insertLoan(*returnedLoanList, getLoanBorrower(loan),
+                                        getLoanBook(loan), getLoanPriority(loan),
+                                        getBorrowDate(loan), date, overdue);
+            printf("Returned book ID %d by borrower ID %d\n", book_id, borrower_id);
 
-                // Remove loan from active loan list
-                Loan *prev = NULL, *currentLoan = *activeLoanList;
-                while (currentLoan) {
-                    if (currentLoan == loan) {
-                        if (prev) {
-                            setLoanNext(prev, getLoanNext(currentLoan)); // Remove current loan
-                        } else {
-                            *activeLoanList = getLoanNext(currentLoan); // Update head of list
-                        }
-                        break;
-                    }
-                    prev = currentLoan;
-                    currentLoan = getLoanNext(currentLoan);
+            // Remove loan from active loan list
+            if (prevActive) {
+                setLoanNext(prevActive, getLoanNext(loan));
+            } else {
+                *activeLoanList = getLoanNext(loan);
+            }
+
+            // Process the highest priority pending loan for this book
+            Loan *pendingLoan = *pendingLoanList;
+            Loan *prevPending = NULL;
+            Loan *highestPriorityLoan = NULL;
+            Loan *highestPrevPending = NULL;
+            int highestPriority = -1;
+
+            // Find the highest priority pending loan for this book
+            while (pendingLoan != NULL) {
+                if (getBookID(getLoanBook(pendingLoan)) == book_id &&
+                    getLoanPriority(pendingLoan) > highestPriority) {
+                    highestPriority = getLoanPriority(pendingLoan);
+                    highestPriorityLoan = pendingLoan;
+                    highestPrevPending = prevPending;
                 }
+                prevPending = pendingLoan;
+                pendingLoan = getLoanNext(pendingLoan);
+            }
 
-                // Free the loan after removal
-                free(loan);
-
-                // Process the highest priority pending loan
-                Loan *pendingLoan = *pendingLoanList, *prevPending = NULL, *highestPriorityLoan = NULL;
-                int highestPriority = -1;
-
-                // Find the highest priority pending loan
-                while (pendingLoan) {
-                    if (getBookID(getLoanBook(pendingLoan)) == book_id &&
-                        getLoanPriority(pendingLoan) > highestPriority) {
-                        highestPriority = getLoanPriority(pendingLoan);
-                        highestPriorityLoan = pendingLoan;
-                        prevPending = pendingLoan;
-                    }
-                    pendingLoan = getLoanNext(pendingLoan);
-                }
-
-                if (highestPriorityLoan) {
-                    // Remove the highest priority pending loan from the pending list
-                    if (prevPending) {
-                        setLoanNext(prevPending, getLoanNext(highestPriorityLoan));
-                    } else {
-                        *pendingLoanList = getLoanNext(highestPriorityLoan);
-                    }
-
-                    // Set the borrow date 
-                    setBorrowDate(highestPriorityLoan, date);
-                    // Set the return Date
-                    Date return_date = addDaysToDate(date, 14);
-                    setReturnDate(highestPriorityLoan, return_date);
-
-                    // Move the loan to the active loan list
-                    *activeLoanList = insertLoan(*activeLoanList, getLoanBorrower(highestPriorityLoan),
-                                                getLoanBook(highestPriorityLoan), getLoanPriority(highestPriorityLoan),
-                                                getBorrowDate(highestPriorityLoan), getReturnDate(highestPriorityLoan), 0);
-
-                    printf("Book loaned to next pending borrower (Priority: %d)!\n", getLoanPriority(highestPriorityLoan));
-
-                    // Free the removed pending loan
-                    free(highestPriorityLoan);
+            if (highestPriorityLoan != NULL) {
+                // Remove from pending list
+                if (highestPrevPending != NULL) {
+                    setLoanNext(highestPrevPending, getLoanNext(highestPriorityLoan));
                 } else {
-                    // No pending loans, increase book copies
+                    *pendingLoanList = getLoanNext(highestPriorityLoan);
+                }
+
+                // Set dates for the new active loan
+                setBorrowDate(highestPriorityLoan, date);
+                Date return_date = addDaysToDate(date, 14);
+                setReturnDate(highestPriorityLoan, return_date);
+
+                // Add to active list 
+                setLoanNext(highestPriorityLoan, *activeLoanList);
+                *activeLoanList = highestPriorityLoan;
+
+                printf("Book loaned to next pending borrower (Priority: %d)!\n", 
+                    getLoanPriority(highestPriorityLoan));
+            } else {
+                // No pending loans, increase book copies
+                if (book != NULL) {
                     setBookCopies(book, getBookCopies(book) + 1);
                     printf("Book returned, copies increased to %d!\n", getBookCopies(book));
                 }
-
-                return; // Exit the function after processing the return
             }
+
+            // Free the original loan node 
+            free(loan);
+            return;
         }
     }
     
     // If the loan was not found or the input is invalid, print an error
     printf("Error: The loan was not found or invalid input: %s\n", line);
 }
-
 
 
 void loadLibraryData(const char *filename, Borrower **borrowerList, Loan **activeLoanList,
@@ -1326,16 +1322,26 @@ void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
 
     // Get Return Date in YYYY-MM-DD format
     printf("Enter Return Date (YYYY-MM-DD): ");
-    while (scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3 ) {  // Validate date format
+    while (scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3 ) {
         while (getchar() != '\n'); // Clear invalid input
         printf("Invalid date format or invalid date. Please enter in YYYY-MM-DD format: ");
     }
     while (getchar() != '\n'); // Clear input buffer after date input
 
     // Search for the loan in the active loan list
-    Loan *loan = findActiveLoan(activeLoanList, book_id, borrower_id);
+    Loan *loan = *activeLoanList;
     Loan *prev = NULL;
     Book *book = findBookById(bookList, book_id);
+
+    // Find the loan in the active list
+    while (loan != NULL) {
+        if (getBookID(getLoanBook(loan)) == book_id &&
+            getBorrowerID(getLoanBorrower(loan)) == borrower_id) {
+            break;
+        }
+        prev = loan;
+        loan = getLoanNext(loan);
+    }
 
     if (loan != NULL) {
         // Check if the book is overdue
@@ -1355,64 +1361,62 @@ void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
             *activeLoanList = getLoanNext(loan);
         }
 
-        Loan *nextLoan = getLoanNext(loan);
-        free(loan);  // Free the loan node
-        loan = nextLoan;
-
         // Now, try to find and process the highest priority pending loan for the same book
-        Loan *pendingLoan = *pendingLoanList, *prevPending = NULL, *highestPriorityLoan = NULL;
+        Loan *pendingLoan = *pendingLoanList;
+        Loan *prevPending = NULL;
+        Loan *highestPriorityLoan = NULL;
+        Loan *highestPrevPending = NULL;
         int highestPriority = -1;
-        Loan *highestPrevPending = NULL;  // Initialize the variable
 
-        while (pendingLoan) {
-            // If this pending loan is for the same book and has higher priority
+        while (pendingLoan != NULL) {
             if (getBookID(getLoanBook(pendingLoan)) == book_id &&
                 getLoanPriority(pendingLoan) > highestPriority) {
                 highestPriority = getLoanPriority(pendingLoan);
                 highestPriorityLoan = pendingLoan;
-                highestPrevPending = prevPending;  // Store the previous loan
+                highestPrevPending = prevPending;
             }
             prevPending = pendingLoan;
             pendingLoan = getLoanNext(pendingLoan);
         }
 
         // If there's a pending loan with a higher priority, process it
-        if (highestPriorityLoan) {
-            // Remove the highest priority loan from the pending list
-            if (highestPrevPending) {
+        if (highestPriorityLoan != NULL) {
+            // Remove from pending list
+            if (highestPrevPending != NULL) {
                 setLoanNext(highestPrevPending, getLoanNext(highestPriorityLoan));
             } else {
                 *pendingLoanList = getLoanNext(highestPriorityLoan);
             }
 
-            // Set borrow date and return date for the new active loan
+            // Set dates for the new active loan
             setBorrowDate(highestPriorityLoan, date);
             Date return_date = addDaysToDate(date, 14);
             setReturnDate(highestPriorityLoan, return_date);
 
-            // Move the loan from pending to active list
-            *activeLoanList = insertLoan(*activeLoanList, getLoanBorrower(highestPriorityLoan),
-                getLoanBook(highestPriorityLoan), getLoanPriority(highestPriorityLoan),
-                getBorrowDate(highestPriorityLoan), getReturnDate(highestPriorityLoan), 0);
+            // Add to active list (without creating a new node)
+            setLoanNext(highestPriorityLoan, *activeLoanList);
+            *activeLoanList = highestPriorityLoan;
 
             printf("Book loaned to next pending borrower (Priority: %d)!\n",
                 getLoanPriority(highestPriorityLoan));
-
-            // Free the removed pending loan
-            free(highestPriorityLoan);
         } else {
             // No pending loans, increment book copies
-            setBookCopies(book, getBookCopies(book) + 1);
-            printf("Book returned, copies increased to %d!\n", getBookCopies(book));
+            if (book != NULL) {
+                setBookCopies(book, getBookCopies(book) + 1);
+                printf("Book returned, copies increased to %d!\n", getBookCopies(book));
+            }
         }
 
-        return; // Stop function after handling the return
+        // Free the original loan node (only if we didn't reuse the pending loan)
+        if (highestPriorityLoan != loan) {
+            free(loan);
+        }
+        return;
     }
 
     // If no active loan was found for the specified book and borrower
     printf("\nError: No active loan found for Book ID %d and Borrower ID %d\n", book_id, borrower_id);
 }
-
 
 void Herosec(){
     system("cls");
