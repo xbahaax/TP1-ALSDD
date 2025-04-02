@@ -481,6 +481,42 @@ void overdue(Loan *l) {
     }
 }
 
+// Function to validate a date (without leap year logic)
+int isValidDate(Date date) {
+    // Days in each month (fixed for simplicity)
+    int daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    // Check month range
+    if (date.month < 1 || date.month > 12) {
+        return 0;
+    }
+
+    // Check day range
+    if (date.day < 1 || date.day > daysInMonth[date.month - 1]) {
+        return 0;
+    }
+
+    return 1; // Valid date
+}
+
+// Function to input and validate a date
+void inputDate(Date *date,char* prompt) {
+    int valid = 0;
+    
+    while (!valid) {
+        printf("%s", prompt);
+        if (scanf("%d-%d-%d", &date->year, &date->month, &date->day) == 3) {
+            if (isValidDate(*date)) {
+                valid = 1;
+            } else {
+                printf("Invalid date. Please enter a correct date.\n");
+            }
+        } else {
+            printf("Invalid format. Please enter in YYYY-MM-DD format.\n");
+            while (getchar() != '\n'); 
+        }
+    }
+}
+
 // ------------------------------------------Searching by ID -----------------------------------------------
 
 Book* findBookById(Book *bookList, int id) {
@@ -984,11 +1020,7 @@ void AddLoan(Borrower **borrowerList, Loan **activeLoanList,
     book_id = getIntInput("Enter Book ID: ");
     borrower_id = getIntInput("Enter Borrower ID: ");
 
-    printf("Enter Borrow Date (YYYY-MM-DD): ");
-    while (scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3) {
-    while (getchar() != '\n');
-    printf("Invalid date format. Please enter in YYYY-MM-DD format: ");
-    }
+    inputDate(&date,"Enter Borrow Date (YYYY-MM-DD): ");
     while (getchar() != '\n');
 
     priority = getIntInput("Enter Priority: ");
@@ -1008,11 +1040,7 @@ void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
     borrower_id = getIntInput("Enter Borrower ID: ");
 
     // Get Return Date in YYYY-MM-DD format
-    printf("Enter Return Date (YYYY-MM-DD): ");
-    while (scanf("%d-%d-%d", &date.year, &date.month, &date.day) != 3) {
-        while (getchar() != '\n');
-        printf("Invalid date format or invalid date. Please enter in YYYY-MM-DD format: ");
-    }
+    inputDate(&date,"Enter Return Date (YYYY-MM-DD): ");
     while (getchar() != '\n');
 
     processReturn(book_id, borrower_id, date, activeLoanList, pendingLoanList, returnedLoanList, bookList);
@@ -1375,6 +1403,10 @@ void processBorrowBook(char *line, Borrower **borrowerList, Loan **activeLoanLis
 
     if (sscanf(line, "BORROW_BOOK %d %d %d-%d-%d %d", &book_id, &borrower_id,
     &date.year, &date.month, &date.day, &priority) == 6) {
+        if (!isValidDate(date)){
+            printf("Error parsing line %s: invalid date\n", line);
+            return;
+        }
         processBorrow(book_id, borrower_id, date, priority, borrowerList, activeLoanList, pendingLoanList, bookList);
     } else {
         printf("Error: Invalid input format: %s\n", line);
@@ -1389,6 +1421,10 @@ void processReturnBook(char *line, Loan **activeLoanList, Loan **pendingLoanList
 
     // Parse the input line for book return details
     if (sscanf(line, "RETURN_BOOK %d %d %d-%d-%d", &book_id, &borrower_id, &date.year, &date.month, &date.day) == 5) {
+        if (!isValidDate(date)){
+            printf("Error parsing line %s: invalid date\n", line);
+            return;
+            }
         processReturn(book_id, borrower_id, date, activeLoanList, pendingLoanList, returnedLoanList, bookList);
     } else {
         printf("Error: The loan was not found or invalid input: %s\n", line);

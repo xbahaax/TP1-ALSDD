@@ -256,6 +256,13 @@ Date addDaysToDate(Date date, int days);
 // Function to print all active overdued loans
 void overdue(Loan *l);
 
+
+// Function to validate a date 
+int isValidDate(Date date);
+
+// Function to input and validate a date
+void inputDate(Date *date,char* prompt);
+
 // Function to check if a book exists by id and gets it addresse
 Book* findBookById(Book *bookList, int id);
 
