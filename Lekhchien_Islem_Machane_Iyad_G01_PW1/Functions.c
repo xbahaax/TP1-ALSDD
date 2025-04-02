@@ -363,7 +363,7 @@ Borrower* insertBorrower(Borrower *head, int id, char name[]) {
 
 
 Loan* insertLoan(Loan *head, Borrower *b, Book *bk, int priority, Date borrow_date, Date return_date, int overdue) {
-    // Allocate and initialize new loan (same as before)
+
     Loan *newLoan = NULL;
     while (newLoan == NULL) {
         newLoan = (Loan*) malloc(sizeof(Loan));
@@ -372,34 +372,31 @@ Loan* insertLoan(Loan *head, Borrower *b, Book *bk, int priority, Date borrow_da
     setBorrowDate(newLoan, borrow_date);
     setReturnDate(newLoan, return_date);
     setLoanNext(newLoan, NULL);
-    setLoanPrev(newLoan, NULL);  // Initialize prev to NULL
+    setLoanPrev(newLoan, NULL);  
     setLoanOverdue(newLoan, overdue);
 
-    // Case 1: Insert at the head (empty list or higher priority)
     if (head == NULL || getLoanPriority(head) > priority) {
         setLoanNext(newLoan, head);
         if (head != NULL) {
-            setLoanPrev(head, newLoan);  // Update old head's prev
+            setLoanPrev(head, newLoan);  
         }
         return newLoan;
     }
 
-    // Case 2: Insert in the middle/end
     Loan *current = head;
     while (getLoanNext(current) != NULL && getLoanPriority(getLoanNext(current)) <= priority) {
         current = getLoanNext(current);
     }
 
-    // Link newLoan into the list
-    setLoanNext(newLoan, getLoanNext(current));  // newLoan->next = current->next
-    setLoanPrev(newLoan, current);               // newLoan->prev = current
+    setLoanNext(newLoan, getLoanNext(current));  
+    setLoanPrev(newLoan, current);              
 
     if (getLoanNext(current) != NULL) {
-        setLoanPrev(getLoanNext(current), newLoan);  // If next exists, update its prev
+        setLoanPrev(getLoanNext(current), newLoan);  
     }
-    setLoanNext(current, newLoan);              // current->next = newLoan
+    setLoanNext(current, newLoan);              
 
-    return head;  // Head remains unchanged unless inserting at head
+    return head;  
 }
 
 // ----------------------------------------- Date functions -----------------------------------------//
@@ -1088,17 +1085,17 @@ void print_book_ligne(Book *b) {
 
 void print_header_borrowers() {
     printf("| %-30s | %-66s |\n",
-           "Borrower Id", "Borrower Name");
+        "Borrower Id", "Borrower Name");
 }
 
 void print_borrower_ligne(Borrower *b) {
     printf("| %-30d | %-66s |\n",
-           getBorrowerID(b), getBorrowerName(b));
+        getBorrowerID(b), getBorrowerName(b));
 }
 
 void print_header_loan() {
     printf("| %-20s | %-37s | %-11s | %-11s | %-8s |\n",
-           "Borrower Name", "Book Name", "Borrow Date", "Return Date", "Priority");
+        "Borrower Name", "Book Name", "Borrow Date", "Return Date", "Priority");
 }
 
 char* formatDate(Date d) {
