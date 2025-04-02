@@ -65,7 +65,8 @@ void setBookPrev(Book *b, Book *prev)
 }
 
 
-void setBook(Book *b, int id, char title[], char author[], int copies ) {
+void setBook(Book *b, int id, char title[], char author[], int copies ) 
+{
     setBookID(b, id);
     setBookTitle(b, title);
     setBookAuthor(b, author);
@@ -85,30 +86,36 @@ char* getBorrowerName(Borrower *b)
     return b->name;
 }
 
+
 Borrower* getBorrowerNext(Borrower *b)
 {
     return b->next;
 }
+
 
 Borrower* getBorrowerPrev(Borrower *b)
 {
     return b->prev;
 }
 
+
 void setBorrowerID(Borrower *b, int id)
 {
     b->id = id;
 }
+
 
 void setBorrowerName(Borrower *b, char name[])
 {
     strcpy(b->name, name);
 }
 
+
 void setBorrowerNext(Borrower *b, Borrower *next)
 {
     b->next = next;
 }
+
 
 void setBorrowerPrev(Borrower *b, Borrower *prev)
 {
@@ -121,81 +128,97 @@ void setBorrower(Borrower *b, int id, char name[]) {
     setBorrowerName(b, name);
 }
 
+
 // Loan functions
 Borrower* getLoanBorrower(Loan *l)
 {
     return l->borrower;
 }
 
+
 Book* getLoanBook(Loan *l)
 {
     return l->book;
 }
+
 
 Date getBorrowDate(Loan *l)
 {
     return l->borrow_date;
 }
 
+
 Date getReturnDate(Loan *l)
 {
     return l->return_date;
 }
+
 
 int getLoanPriority(Loan *l)
 {
     return l->priority;
 }
 
+
 int getLoanOverdue(Loan *l)
 {
     return l->overdue;
 }
+
 
 Loan* getLoanNext(Loan *l)
 {
     return l->next;
 }
 
+
 Loan* getLoanPrev(Loan *l)
 {
     return l->prev;
 }
+
 
 void setLoanBorrower(Loan *l, Borrower *b)
 {
     l->borrower = b;
 }
 
+
 void setLoanBook(Loan *l, Book *b)
 {
     l->book = b;
 }
+
 
 void setBorrowDate(Loan *l, Date borrow_date)
 {
     l->borrow_date = borrow_date;
 }
 
+
 void setReturnDate(Loan *l, Date return_date)
 {
     l->return_date = return_date;
 }
+
 
 void setLoanPriority(Loan *l, int priority)
 {
     l->priority = priority;
 }
 
+
 void setLoanOverdue(Loan *l, int overdue)
 {
     l->overdue = overdue;
 }
 
+
 void setLoanNext(Loan *l, Loan *next)
 { 
     l->next = next;
 }
+
 
 void setLoanPrev(Loan *l, Loan *prev)
 {
@@ -210,31 +233,37 @@ void setLoan(Loan *l, Borrower *b, Book *bk, int priority,int overdue) {
     setLoanOverdue(l,overdue);
 }
 
+
 // Date functions
 int getDateYear(Date d)
 {
     return d.year;
 }
 
+
 int getDateMonth(Date d)
 {
     return d.month;
 }
+
 
 int getDateDay(Date d)
 {
     return d.day;
 }
 
+
 void setDateYear(Date *d, int year)
 {
     d->year = year;
 }
 
+
 void setDateMonth(Date *d, int month)
 {
     d->month = month;
 }
+
 
 void setDateDay(Date *d, int day)
 {
@@ -305,15 +334,17 @@ Book* insertBook(Book *head, int id, char title[], char author[], int copies) {
     while (newBook == NULL ) {
         newBook = (Book*) malloc(sizeof(Book));
     }
+    // Setting the new book structure
     setBook(newBook, id, title, author, copies);
     setBookNext(newBook, NULL);
     setBookPrev(newBook, NULL);
+    // case where the list is empty
     if (head == NULL || getBookID(head) > id) {
         setBookNext(newBook, head);
         if (head != NULL) setBookPrev(head, newBook);
         return newBook;
     }
-
+    // case where the list is not empty
     Book *current = head;
     while (getBookNext(current) != NULL && getBookID(getBookNext(current)) < id)
         current = getBookNext(current);
@@ -336,16 +367,18 @@ Borrower* insertBorrower(Borrower *head, int id, char name[]) {
         newBorrower = (Borrower*) malloc(sizeof(Borrower));
 
     }
+    // Setting the new borrower structure
     setBorrower(newBorrower, id, name);
     setBorrowerNext(newBorrower, NULL);
     setBorrowerPrev(newBorrower, NULL);
 
+    // case where the list is empty
     if (head == NULL || getBorrowerID(head) > id) {
         setBorrowerNext(newBorrower, head);
         if (head != NULL) setBorrowerPrev(head, newBorrower);
         return newBorrower;
     }
-
+    // case where the list is not empty
     Borrower *current = head;
     while (getBorrowerNext(current) != NULL && getBorrowerID(getBorrowerNext(current)) < id) {
         current = getBorrowerNext(current);
@@ -368,13 +401,14 @@ Loan* insertLoan(Loan *head, Borrower *b, Book *bk, int priority, Date borrow_da
     while (newLoan == NULL) {
         newLoan = (Loan*) malloc(sizeof(Loan));
     }
+    // Setting the new loan structure
     setLoan(newLoan, b, bk, priority, overdue);
     setBorrowDate(newLoan, borrow_date);
     setReturnDate(newLoan, return_date);
     setLoanNext(newLoan, NULL);
     setLoanPrev(newLoan, NULL);  
     setLoanOverdue(newLoan, overdue);
-
+    // case where the list is empty
     if (head == NULL || getLoanPriority(head) > priority) {
         setLoanNext(newLoan, head);
         if (head != NULL) {
@@ -382,7 +416,7 @@ Loan* insertLoan(Loan *head, Borrower *b, Book *bk, int priority, Date borrow_da
         }
         return newLoan;
     }
-
+    // case where the list is not empty
     Loan *current = head;
     while (getLoanNext(current) != NULL && getLoanPriority(getLoanNext(current)) <= priority) {
         current = getLoanNext(current);
@@ -406,11 +440,11 @@ int compare_date(Loan *l) {
     struct tm *current_time;
 
     time(&t);
-    current_time = localtime(&t);
+    current_time = localtime(&t); // get current time
 
     int current_day = current_time->tm_mday;
-    int current_month = current_time->tm_mon + 1;
-    int current_year = current_time->tm_year + 1900;
+    int current_month = current_time->tm_mon + 1; // months from 0 to 11
+    int current_year = current_time->tm_year + 1900; // get current year
 
     // Getting the return date of the loan
     int return_year = getDateYear(getReturnDate(l));
@@ -490,7 +524,7 @@ int isValidDate(Date date) {
         return 0;
     }
 
-    // Check day range
+    // Check day range to match the month number of days
     if (date.day < 1 || date.day > daysInMonth[date.month - 1]) {
         return 0;
     }
@@ -503,15 +537,15 @@ void inputDate(Date *date,char* prompt) {
     int valid = 0;
     
     while (!valid) {
-        printf("%s", prompt);
+        printf("%s", prompt);// prompt the user for date
         if (scanf("%d-%d-%d", &date->year, &date->month, &date->day) == 3) {
             if (isValidDate(*date)) {
                 valid = 1;
             } else {
-                printf("Invalid date. Please enter a correct date.\n");
+                printf("Invalid date. Please enter a correct date.\n"); // invalid date
             }
         } else {
-            printf("Invalid format. Please enter in YYYY-MM-DD format.\n");
+            printf("Invalid format. Please enter in YYYY-MM-DD format.\n"); // invalid format
             while (getchar() != '\n'); 
         }
     }
@@ -605,7 +639,7 @@ void getStringInput(const char *prompt, char *buffer, int size) {
     // Display the prompt message to the user
     printf("%s", prompt);
 
-    // Clear any leftover characters in the input buffer (especially newlines from previous inputs)
+    // Clear any leftover characters in the input buffer 
     while (getchar() != '\n'); 
 
     // Read a string from the user, ensuring it does not exceed 'size - 1' characters
@@ -945,7 +979,7 @@ void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanLis
     }
 }
 
-
+// Function to process borrowing a book
 void processBorrow(int book_id, int borrower_id, Date date, int priority,
     Borrower **borrowerList, Loan **activeLoanList,
     Loan **pendingLoanList, Book *bookList) {
