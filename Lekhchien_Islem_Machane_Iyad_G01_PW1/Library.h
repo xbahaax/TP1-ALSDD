@@ -47,18 +47,69 @@ typedef struct Loan {
 } Loan;
 
 // Book functions
-int getBookID(Book *b) { return b->id; }
-char* getBookTitle(Book *b) { return b->title; }
-char* getBookAuthor(Book *b) { return b->author; }
-int getBookCopies(Book *b) { return b->copies; }
-Book* getBookNext(Book *b) { return b->next; }
-Book* getBookPrev(Book *b) { return b->prev; }
-void setBookID(Book *b, int id) { b->id = id; }
-void setBookTitle(Book *b, char title[]) { strcpy(b->title, title); }
-void setBookAuthor(Book *b, char author[]) { strcpy(b->author, author); }
-void setBookCopies(Book *b, int copies) { b->copies = copies; }
-void setBookNext(Book *b, Book *next) { b->next = next; }
-void setBookPrev(Book *b, Book *prev) { b->prev = prev; }
+int getBookID(Book *b) 
+{ 
+    return b->id; 
+}
+
+
+char* getBookTitle(Book *b) 
+{
+    return b->title; 
+}
+
+char* getBookAuthor(Book *b) 
+{
+    return b->author; 
+}
+
+int getBookCopies(Book *b) 
+{ 
+    return b->copies; 
+}
+
+
+Book* getBookNext(Book *b) 
+{ 
+    return b->next; 
+}
+
+Book* getBookPrev(Book *b) 
+{ 
+    return b->prev; 
+}
+
+void setBookID(Book *b, int id) 
+{ 
+    b->id = id; 
+}
+
+void setBookTitle(Book *b, char title[]) 
+{ 
+    strcpy(b->title, title); 
+}
+
+void setBookAuthor(Book *b, char author[]) 
+{ 
+    strcpy(b->author, author); 
+}
+
+void setBookCopies(Book *b, int copies) 
+{ 
+    b->copies = copies; 
+}
+
+void setBookNext(Book *b, Book *next) 
+{ 
+    b->next = next; 
+}
+
+void setBookPrev(Book *b, Book *prev) 
+{ 
+    b->prev = prev; 
+}
+
+
 void setBook(Book *b, int id, char title[], char author[], int copies ) {
     setBookID(b, id);
     setBookTitle(b, title);
@@ -72,33 +123,118 @@ void setBook(Book *b, int id, char title[], char author[], int copies ) {
 
 
 // Borrower functions
-int getBorrowerID(Borrower *b) { return b->id; }
-char* getBorrowerName(Borrower *b) { return b->name; }
-Borrower* getBorrowerNext(Borrower *b) { return b->next; }
-Borrower* getBorrowerPrev(Borrower *b) { return b->prev; }
-void setBorrowerID(Borrower *b, int id) { b->id = id; }
-void setBorrowerName(Borrower *b, char name[]) { strcpy(b->name, name); }
-void setBorrowerNext(Borrower *b, Borrower *next) { b->next = next; }
-void setBorrowerPrev(Borrower *b, Borrower *prev) { b->prev = prev; }
+int getBorrowerID(Borrower *b) 
+{ 
+    return b->id; 
+}
+
+char* getBorrowerName(Borrower *b) 
+{ 
+    return b->name; 
+}
+
+Borrower* getBorrowerNext(Borrower *b) 
+{ 
+    return b->next; 
+}
+
+Borrower* getBorrowerPrev(Borrower *b) 
+{ 
+    return b->prev;
+}
+
+void setBorrowerID(Borrower *b, int id) 
+{ 
+    b->id = id; 
+}
+
+void setBorrowerName(Borrower *b, char name[]) 
+{ 
+    strcpy(b->name, name); 
+}
+
+void setBorrowerNext(Borrower *b, Borrower *next) 
+{ 
+    b->next = next; 
+}
+
+void setBorrowerPrev(Borrower *b, Borrower *prev) 
+{ 
+    b->prev = prev; 
+}
+
+
 void setBorrower(Borrower *b, int id, char name[]) {
     setBorrowerID(b, id);
     setBorrowerName(b, name);
 }
 
 // Loan functions
-Borrower* getLoanBorrower(Loan *l) { return l->borrower; }
-Book* getLoanBook(Loan *l) { return l->book; }
-Date getBorrowDate(Loan *l) { return l->borrow_date; }
-Date getReturnDate(Loan *l) { return l->return_date; }
-int getLoanPriority(Loan *l) { return l->priority; }
-int getLoanOverdue(Loan *l) { return l->overdue; }
-Loan* getLoanNext(Loan *l) { return l->next; }
-void setLoanBorrower(Loan *l, Borrower *b) { l->borrower = b; }
-void setLoanBook(Loan *l, Book *b) { l->book = b; }
-void setBorrowDate(Loan *l, Date borrow_date) { l->borrow_date = borrow_date; }
-void setReturnDate(Loan *l, Date return_date) { l->return_date = return_date; }
-void setLoanPriority(Loan *l, int priority) { l->priority = priority; }
-void setLoanOverdue(Loan *l, int overdue) { l->overdue = overdue; }
+Borrower* getLoanBorrower(Loan *l) 
+{ 
+    return l->borrower; 
+}
+
+Book* getLoanBook(Loan *l)
+{ 
+    return l->book; 
+}
+
+Date getBorrowDate(Loan *l) 
+{ 
+    return l->borrow_date; 
+}
+
+Date getReturnDate(Loan *l) 
+{ 
+    return l->return_date; 
+}
+
+int getLoanPriority(Loan *l) 
+{ 
+    return l->priority; 
+}
+
+int getLoanOverdue(Loan *l) 
+{ 
+    return l->overdue; 
+}
+
+Loan* getLoanNext(Loan *l) 
+{ 
+    return l->next; 
+}
+
+void setLoanBorrower(Loan *l, Borrower *b) 
+{ 
+    l->borrower = b; 
+}
+
+void setLoanBook(Loan *l, Book *b) 
+{ 
+    l->book = b; 
+}
+
+void setBorrowDate(Loan *l, Date borrow_date) 
+{ 
+    l->borrow_date = borrow_date; 
+}
+
+void setReturnDate(Loan *l, Date return_date) 
+{ 
+    l->return_date = return_date; 
+}
+
+void setLoanPriority(Loan *l, int priority) 
+{ 
+    l->priority = priority; 
+}
+
+void setLoanOverdue(Loan *l, int overdue) 
+{ 
+    l->overdue = overdue; 
+}
+
 void setLoanNext(Loan *l, Loan *next) { l->next = next; }
 void setLoan(Loan *l, Borrower *b, Book *bk, int priority,int overdue) {
     setLoanBorrower(l, b);
@@ -108,12 +244,35 @@ void setLoan(Loan *l, Borrower *b, Book *bk, int priority,int overdue) {
 }
 
 // Date functions
-int getDateYear(Date d) { return d.year; }
-int getDateMonth(Date d) { return d.month; }
-int getDateDay(Date d) { return d.day; }
-void setDateYear(Date *d, int year) { d->year = year; }
-void setDateMonth(Date *d, int month) { d->month = month; }
-void setDateDay(Date *d, int day) { d->day = day; }
+int getDateYear(Date d) 
+{ 
+    return d.year; 
+}
+
+int getDateMonth(Date d) 
+{ 
+    return d.month;
+}
+
+int getDateDay(Date d) 
+{ 
+    return d.day; 
+}
+
+void setDateYear(Date *d, int year) 
+{ 
+    d->year = year; 
+}
+
+void setDateMonth(Date *d, int month) 
+{ 
+    d->month = month; 
+}
+
+void setDateDay(Date *d, int day) 
+{ 
+    d->day = day; 
+}
 
 // Free functions
 void freeBooks(Book *head) {
@@ -756,7 +915,7 @@ void processBorrowBook(char *line, Borrower **borrowerList, Loan **activeLoanLis
         Book *book = findBookById(bookList, book_id);
 
         if (!borrower || !book) {
-            printf("Error: Borrower or book not found.\n");
+            printf("Error: Borrower or book not found : %s \n", line);
             return;
         }
         return_date = addDaysToDate(date,14);
@@ -859,6 +1018,7 @@ void processReturnBook(char *line, Loan **activeLoanList, Loan **pendingLoanList
         loan = getLoanNext(loan);
         }
     }
+    printf("Error : The loan was not found : %s\n",line);
 }
 
 
