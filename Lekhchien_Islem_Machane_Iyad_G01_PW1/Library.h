@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <windows.h>
 
 typedef struct {
     int day;
@@ -229,5 +230,7 @@ void loadLibraryData(const char *filename, Borrower **borrowerList, Loan **activ
     Loan **pendingLoanList, Loan **returnedLoanList, Book *bookList);
 void processReturnBookConsole(Loan **activeLoanList, Loan **pendingLoanList,
     Loan **returnedLoanList, Book *bookList);
+
+void Herosec();
 
 #endif

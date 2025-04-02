@@ -1345,6 +1345,40 @@ printf("\nError: No active loan found for Book ID %d and Borrower ID %d\n", book
 }
 
 
-
+void Herosec(){
+    system("cls");
+    printf("\t\t\t\t%ccole nationale sup%crieur d'informatique \n",130,130);
+    printf("\t\t\t  .----------------.  .----------------.  .----------------.\n");
+    printf("\t\t\t | .--------------. || .--------------. || .--------------. |\n");
+    printf("\t\t\t | |  _________   | || |    _______   | || |     _____    | |\n");
+    printf("\t\t\t | | |_   ___  |  | || |   /  ___  |  | || |    |_   _|   | |\n");
+    printf("\t\t\t | |   | |_  \\_|  | || |  |  (__ \\_|  | || |      | |     | |\n");
+    printf("\t\t\t | |   |  _|  _   | || |   \'.___`-.   | || |      | |     | |\n");
+    printf("\t\t\t | |  _| |___/ |  | || |  |`\\____) |  | || |     _| |_    | |\n");
+    printf("\t\t\t | | |_________|  | || |  |_______.\'  | || |    |_____|   | |\n");
+    printf("\t\t\t | |              | || |              | || |              | |\n");
+    printf("\t\t\t | \'--------------\' || \'--------------\' || \'--------------\' |\n");
+    printf("\t\t\t  \'----------------\'  \'----------------\'  \'----------------\'\n");
+    Sleep(1000);
+    printf("\t\t\t\tCPI - 1%cre Ann%ce - Ann%ce Universitaire 2024/2025 \n", 138, 130, 130);
+    printf("\t\t\t ____________________________________________________________\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t| Designed & Coded By : Lekhchine Islem Bahaa Eddine         |\n");
+    printf("\t\t\t|                                  &                         |\n");
+    printf("\t\t\t|                             Machane Mohamed Iyad           |\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t|         \tSECTION : A           GROUPE: 01             |\n");
+    printf("\t\t\t|                      \t  TP1 ALSDD                          |\n");
+    printf("\t\t\t|      \t Library Management System (LMS)                     |\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t|                                                            |\n");
+    printf("\t\t\t| Supervised by: Ms. Artabaz Saliha                          |\n");
+    printf("\t\t\t|____________________________________________________________|\n\n\n");
+    printf("\t\t\t _____________________________________________________________\n");
+    printf("\t\t\t| Note!! Press the 'ENTER' key to access the Menu             |\n");
+    printf("\t\t\t|_____________________________________________________________|\n");
+    getchar();
+}
 
 
