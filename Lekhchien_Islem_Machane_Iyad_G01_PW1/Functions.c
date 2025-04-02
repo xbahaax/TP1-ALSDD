@@ -939,7 +939,7 @@ void print_AllLoans(Loan *activeLoanList, Loan *pendingLoanList, Loan *returnedL
     pauseScreen();
 }
 
-
+// Tables functions
 void print_ligne() {
     printf("-------------------------------------------------------------------------------------------------------\n");
 }
@@ -1248,6 +1248,15 @@ void processReturnBook(char *line, Loan **activeLoanList, Loan **pendingLoanList
                     highestPriorityLoan = pendingLoan;
                     highestPrevPending = prevPending;
                 }
+                // If the priority is equal , the earliest pending loan has priority
+                if (getBookID(getLoanBook(pendingLoan)) == book_id &&
+                getLoanPriority(pendingLoan) == highestPriority) {
+                    // Compare borrow dates to decide which loan has higher precedence
+                    if (compareDates(getBorrowDate(pendingLoan), getBorrowDate(highestPriorityLoan)) < 0) {
+                    highestPriorityLoan = pendingLoan;
+                    highestPrevPending = prevPending;
+                    }
+                }
                 prevPending = pendingLoan;
                 pendingLoan = getLoanNext(pendingLoan);
             }
@@ -1406,7 +1415,19 @@ void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
                 highestPriority = getLoanPriority(pendingLoan);
                 highestPriorityLoan = pendingLoan;
                 highestPrevPending = prevPending;
-            }
+            };
+            // If the priority is equal , the earliest pending loan has priority
+            if (getBookID(getLoanBook(pendingLoan)) == book_id &&
+                getLoanPriority(pendingLoan) == highestPriority) {
+                    // Compare borrow dates to decide which loan has higher precedence
+                    if (compareDates(getBorrowDate(pendingLoan), getBorrowDate(highestPriorityLoan)) < 0) {
+                    highestPriorityLoan = pendingLoan;
+                    highestPrevPending = prevPending;
+                    }
+                }
+    
+    // Update highestPriority (if needed)
+    highestPriority = getLoanPriority(pendingLoan);
             prevPending = pendingLoan;
             pendingLoan = getLoanNext(pendingLoan);
         }
