@@ -631,7 +631,7 @@ void LoansMenu(Loan **active, Loan **pending, Loan **returned, Borrower **b, Boo
                 pauseScreen();
                 break;
             case 3:
-                processReturnBookConsole(active, pending, returned, bk);
+                AddReturn(active, pending, returned, bk);
                 pauseScreen();
                 break;
             case 4:
@@ -1246,7 +1246,7 @@ void loadLibraryData(const char *filename, Borrower **borrowerList, Loan **activ
 fclose(file);
 }
 
-void processReturnBookConsole(Loan **activeLoanList, Loan **pendingLoanList,
+void AddReturn(Loan **activeLoanList, Loan **pendingLoanList,
     Loan **returnedLoanList, Book *bookList) {
 int borrower_id, book_id, overdue;
 Date date;
