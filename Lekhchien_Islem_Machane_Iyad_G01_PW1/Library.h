@@ -65,7 +65,7 @@ char* getBookAuthor(Book *b);
 // Function to get a Book Copies
 int getBookCopies(Book *b);
 
-// Function to get a Next Book structure Pointer 
+// Function to get a Next Book structure Pointer
 Book* getBookNext(Book *b);
 
 // Function to get a Previous Book structure Pointer
