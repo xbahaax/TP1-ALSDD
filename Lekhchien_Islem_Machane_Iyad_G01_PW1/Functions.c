@@ -901,6 +901,8 @@ void processReturn(int book_id, int borrower_id, Date date, Loan **activeLoanLis
             }
         }
     // The part above is to find the highest priority loan for the book
+    // the priority is bigger when the numbe is bigger
+    // so Loan with priority 5 is more important than Loan with priority 4
     //If thers is 2 requests for the same book, the one with the oldest request will be the one to be processed first
     pendingLoan = getLoanNext(pendingLoan);
     }
